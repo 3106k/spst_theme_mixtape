@@ -1,0 +1,289 @@
+<div class="wrap">
+  <!-- search criteria -->
+  <section class="mobile ipad">
+    <div class="inner search-criteria-area">
+      <ul class="search-criteria">
+        <li class="search-brand">ブランドから探す</li>
+        <li class="search-category">カテゴリから探す</li>
+      </ul>
+      <!--<p class="margin-bottom-5">"{{ params['name_or_maker_name_cont'] }}" の検索結果</p>-->
+      <!--<p class="margin-bottom-10">全{{ total_count }}件中{{ current_offset | plus: 1 }}件～{% if next_page_path %}{{ current_offset | plus: per }}{% else %}{{ total_count }}{% endif %}件を表示</p>-->
+      {% paginate products_all by 10 %}
+          <div class="inner pagerlist-mobile">
+              <ul class="pager">
+                {% if paginate.previous %}
+                  <li class="prev">
+                    <a href="{{ paginate.previous.url }}">前へ</a>
+                  </li>
+                {% endif %}
+
+                {% for page in paginate.parts %}
+                  {% if paginate.current_page == page.title %}
+                    <li class="selected">
+                      {{ page.title }}
+                    </li>
+                  {% elsif page.is_link %}
+                    <li>
+                      <a href="{{ page.url }}">{{ page.title }}</a>
+                    </li>
+                  {% else %}
+                    <li>
+                      {{ page.title }}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+
+                {% if paginate.next %}
+                  <li class="next">
+                    <a href="{{ paginate.next.url }}">次へ</a>
+                  </li>
+                {% endif %}
+              </ul>
+          </div>
+      {% endpaginate %}
+      <!-- nav brand -->
+      <nav class="nav-brand">
+        <img src="{{ file_root_path }}/img/parts/arrow10.png" class="brand-arrow">
+        <p class="margin-bottom-5">アルファベッド順に表示しています</p>
+        <!--
+        <input type="text" name="" id="" class="" placeholder="ブランド名をこちらに入力">
+        -->
+        <ul>
+          {% capture makers %}
+            {% for maker in makers %}
+              |{{ maker.name }}#{{ maker.id }}
+            {% endfor %}
+          {% endcapture %}
+
+          {% assign sortedmakers = makers | split: '|' | sort %}
+
+          {% for maker in sortedmakers %}
+            {% assign makeritems = maker | split: '#' %}
+
+            {% if makeritems[0] != blank && makeritems[1] != blank %}
+              {% if cookies['gender'] != 'men' %}
+                <li><a href='/shop/makers/{{ makeritems[1] }}?q%5Bby_product_category_name%5D=レディース'>{{ makeritems[0] }}</a></li>
+              {% else %}
+                <li><a href='/shop/makers/{{ makeritems[1] }}?q%5Bby_product_category_name%5D=メンズ'>{{ makeritems[0] }}</a></li>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </nav>
+      <!-- nav brand  -->
+      <!-- nav category -->
+      <nav class="nav-category">
+        <img src="{{ file_root_path }}/img/parts/arrow10.png" class="category-arrow">
+        <ul class="nest01">
+          {% for product_category in root_product_categories %}
+            {% if cookies['gender'] != 'men' %}
+              <li><a href='/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=レディース'>{{ product_category.name }}</a></li>
+            {% else %}
+              <li><a href='/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=メンズ'>{{ product_category.name }}</a></li>
+            {% endif %}
+            <ul class="nest02">
+              {% for product_category in product_category.children %}
+                {% if cookies['gender'] != 'men' %}
+                  <li><a href='/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=レディース'>{{ product_category.name }}</a></li>
+                {% else %}
+                  <li><a href='/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=メンズ'>{{ product_category.name }}</a></li>
+                {% endif %}
+                <ul class="nest03">
+                  {% for product_category in product_category.children %}
+                    {% if cookies['gender'] != 'men' %}
+                      <li><a href='/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=レディース'>{{ product_category.name }}</a></li>
+                    {% else %}
+                      <li><a href='/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=メンズ'>{{ product_category.name }}</a></li>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        </ul>
+      </nav>
+      <!-- nav category -->
+    </div>
+  </section>
+  <!-- search criteria -->
+  <!-- search title -->
+  <section>
+    <div class="inner">
+      <h2 class="brand-name">"{{ params['name_or_maker_name_cont'] }}"の検索結果</h2>
+    </div>
+  </section>
+  <!-- search title -->
+  <!-- search result-->
+  <div class="list thin-img">
+    <div class="inner-float overflow padding-bottom-0">
+
+      <div class="row posts">
+        {% if products_all == empty %}
+          <p class="no-result">該当する商品はありません。</p>
+        {% else %}
+          {% paginate products_all by 10 %}
+            {% for product in paginate.collection %}
+              <div class="col-eq-5">
+                <div class="float-box-inside heightLine list-box">
+                  {% if customer_signed_in == false %}
+                    <a href="/shop/customers/sign_in?customer_return_to=/shop/products/{{ product.master.sku }}">
+                      <img src="{{ file_root_path }}/img/parts/favorite.png" class="favorite">
+                    </a>
+                  {% elsif favorite_product_ids contains product.id %}
+                    <a href='javascript:void(0);' data-master-id='{{ product.master.id }}' class='favorited-input'>
+                      <img src="{{ file_root_path }}/img/parts/favorited.png" class="favorited">
+                    </a>
+                  {% else %}
+                    <a href='javascript:void(0);' data-master-id='{{ product.master.id }}' class='favorite-input'>
+                      <img src="{{ file_root_path }}/img/parts/favorite.png" class="favorite">
+                    </a>
+                  {% endif %}
+                  <div class="padding-10">
+                    <a href="/shop/products/{{ product.master.sku }}" class="hoge"><img src="{{ product.master.thumbnails[0].url_large }}" alt="{{ product.name }}" class="img-max margin-bottom-10"></a>
+                    <ul class="list-product-info">
+                      <li>{{ product.maker.name }}</li>
+                      <li class="bold">{{ product.name }}</li>
+                      {% if product.master.list_price == product.master.sales_price %}
+                        <li>{{ product.master.sales_price | times:1.08 | number_to_currency: unit: '¥', format: '%u%n'}}</li>
+                      {% else %}
+                        <li class="original-price">{{ product.master.list_price | times:1.08 | number_to_currency: unit: '¥', format: '%u%n'}}</li>
+                        <li class="divider">|</li>
+                        <li class="sale">{{ product.master.sales_price | times: 100 | divided_by: product.master.list_price }}% OFF</li>
+                        <li class="bold off-price">{{ product.master.sales_price | times:1.08 | number_to_currency: unit: '¥', format: '%u%n'}}</li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          
+            <div class="pagerlist">
+              <ul class="pager">
+                {% if paginate.previous %}
+                  <li class="prev">
+                    <a href="{{ paginate.previous.url }}">前へ</a>
+                  </li>
+                {% endif %}
+                        
+                {% for page in paginate.parts %}
+                  {% if paginate.current_page == page.title %}
+                    <li class="selected">
+                      {{ page.title }}
+                    </li>
+                  {% elsif page.is_link %}
+                    <li>
+                      <a href="{{ page.url }}">{{ page.title }}</a>
+                    </li>
+                  {% else %}
+                    <li>
+                      {{ page.title }}
+                    </li>
+                  {% endif %}
+                {% endfor %}
+    
+                {% if paginate.next %}
+                  <li class="next">
+                    <a href="{{ paginate.next.url }}">次へ</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          {% endpaginate %}
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+  <!-- search result-->
+  <!-- banner mobile & ipad -->
+  <div class="mobile ipad">
+    <a href='javascript:void(0);'>
+      <img src="{{ file_root_path }}/img/banners/sp_banner_women.png" class="img-max mobile women-mobile" style="display:{% if cookies['gender'] == 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+    </a>
+    <a href='javascript:void(0);'>
+      <img src="{{ file_root_path }}/img/banners/sp_banner_men.png" class="img-max mobile men-mobile" style="display:{% if cookies['gender'] != 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+    </a>
+  </div>
+  <!-- banner mobile & ipad -->
+  <!-- banner pc -->
+  <div class="pc">
+    <a href='javascript:void(0);'>
+      <img src="{{ file_root_path }}/img/banners/banner_women.png" class="img-max pc ipad women-pc" style="display:{% if cookies['gender'] == 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+    </a>
+    <a href='javascript:void(0);'>
+      <img src="{{ file_root_path }}/img/banners/banner_men.png" class="img-max pc ipad men-pc" style="display:{% if cookies['gender'] != 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+    </a>
+  </div>
+  <!-- banner pc -->
+</div>
+
+<script>
+var favorited = "{{ file_root_path }}/img/parts/favorited.png";
+$(document).on('click', '.favorite-input', function(e) {
+  e.preventDefault();
+
+  var self = this;
+
+  $.ajax({
+    url: '/shop/products/' + $(this).data('master-id') + '/favorite',
+    method: 'post',
+    dataType: 'json'
+  })
+  .then(
+    function (data) {
+      $(self).addClass('favorited-input');
+      $(self).removeClass('favorite-input');
+      $(self).find('img').addClass('favorited');
+      $(self).find('img').removeClass('favorite');
+      $(self).find('img').attr('src', favorited);
+    },
+    function () {
+      alert("お気に入りに追加できませんでした");
+  });
+});
+
+var favorite = "{{ file_root_path }}/img/parts/favorite.png";
+$(document).on('click', '.favorited-input', function(e) {
+  e.preventDefault();
+
+  var self = this;
+
+  $.ajax({
+    url: '/shop/products/' + $(this).data('master-id') + '/unfavorite',
+    method: 'post',
+    dataType: 'json'
+  })
+  .then(
+    function (data) {
+      $(self).addClass('favorite-input');
+      $(self).removeClass('favorited-input');
+      $(self).find('img').addClass('favorite');
+      $(self).find('img').removeClass('favorited');
+      $(self).find('img').attr('src', favorite); 
+    },
+    function () {
+      alert("お気に入りを解除できませんでした");
+  });
+});
+
+$(document).ready(function(){
+  $(document).on('click', '.search-category', function() {
+    $('.nav-category').toggle();
+    $('.nav-brand').hide();
+  });
+  $(document).on('click', '.search-brand', function() {
+    $('.nav-brand').toggle();
+    $('.nav-category').hide();
+  });
+  $(document).on('click', 'ul.nest01 li', function() {
+    $(this).next('.nest02').toggle();
+  });
+  $(document).on('click', 'ul.nest02 li', function() {
+    $(this).next('.nest03').toggle();
+  });
+  $(document).on('click', 'ul.nest01 li, ul.nest02 li', function() {
+    $(this).toggleClass('selected-now');
+    $(this).toggleClass('minus');
+  });
+});
+</script>

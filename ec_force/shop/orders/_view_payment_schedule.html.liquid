@@ -1,0 +1,133 @@
+<div class="bottom-space-big" id='view-payment-schedule'>
+
+  <input id='payment_schedule' name='order[subs_order_attributes][payment_schedule]' type='hidden'>
+  <input id='payment_schedule_locked' name='order[subs_order_attributes][payment_schedule_locked]' type='hidden'>
+  <input id='scheduled_to_be_delivered_every_x_month' name='order[subs_order_attributes][scheduled_to_be_delivered_every_x_month]' type='hidden'>
+  <input id='scheduled_to_be_delivered_on_xth_day' name='order[subs_order_attributes][scheduled_to_be_delivered_on_xth_day]' type='hidden'>
+  <input id='scheduled_to_be_delivered_every_x_day' name='order[subs_order_attributes][scheduled_to_be_delivered_every_x_day]' type='hidden'>
+  <input id='scheduled_2nd_delivery_date' name='order[subs_order_attributes][scheduled_to_be_delivered_at]' type='hidden'>
+  <input id='scheduled_2nd_delivery_time' name='order[subs_order_attributes][scheduled_delivery_time]' type='hidden'>
+  <input id='scheduled_to_be_delivered_at' type='hidden'>
+  <input id='scheduled_1st_delivery_date' name='order[scheduled_to_be_delivered_at]' type='hidden'>
+  <input id='scheduled_1st_delivery_time' name='order[scheduled_delivery_time]' type='hidden'>
+
+  <!-- お届けサイクル -->
+  <div id='container_payment_schedule'>
+    <!-- お届けサイクルの指定 -->
+    <div id='container_delivery_cycle' style='display:none;'>
+      <h3 class="h6 fw-700 mb-2">お届け日・サイクルの指定</h3>
+      <fieldset>
+        <label class="bold mb-2 fs-12">お届けサイクルの指定</label>
+        <div class="short custom-select">
+          <select class='md js-placeholder-select validate[required]' id='select_payment_schedule'>
+            <option value="date" {% if order.subs_order.payment_schedule == "date" %}selected{% endif %}>日付で指定</option>
+            <option value="term" {% if order.subs_order.payment_schedule == "term" %}selected{% endif %}>間隔で指定</option>
+          </select>
+        </div>
+      </fieldset>
+    </div>
+    
+    <!-- 日付で指定 -->
+    <div id='container_delivery_schedule_by_date' style='display:none;'>
+      <fieldset>
+        <div class="short">
+          <div class="mr-2 custom-select">
+            <select class='md js-placeholder-select validate[required]' id='select_scheduled_to_be_delivered_every_x_month'>
+              {% for d in order.available_delivery_dates %}
+                <option value='{{ d.month }}' {% if order.subs_order.scheduled_to_be_delivered_every_x_month == d.month %}selected{% endif %}>{{ d.month }}ヶ月</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mr-4 fs-12">
+            <span>おきの</span>
+          </div>
+          <div class="short">
+            <select class='md js-placeholder-select validate[required]' id='select_scheduled_to_be_delivered_on_xth_day'>
+              {% for d in (1..28) %}
+                <option value='{{ d }}' {% if order.subs_order.scheduled_to_be_delivered_on_xth_day == d %}selected{% endif %}>{{ d }}日</option>
+              {% endfor %}
+              <option value="99" {% if order.subs_order.scheduled_to_be_delivered_on_xth_day == "99" %}selected{% endif %}>末日</option>
+            </select>
+          </div>
+          <div class="fs-12">
+            <span>にお届け</span>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- 間隔で指定 -->
+    <div id='container_delivery_schedule_by_term' style='display:none;'>
+      <fieldset>
+        <div class="d-flex align-items-center">
+          <div class="custom-select mr-2">
+            <select class='md js-placeholder-select validate[required,custom[integer]]' id='select_scheduled_to_be_delivered_every_x_day'>
+              {% for i in order.available_delivery_intervals %}
+                {% if order.subs_order %}
+                  <option value="{{ i.day }}" {% if order.subs_order.scheduled_to_be_delivered_every_x_day == i.day %} selected {% endif %}>{{ i.day }}日</option>
+                {% else %}
+                  <option value="{{ i.day }}">{{ i.day }}日</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="fs-12">
+          <span>間隔でお届け</span>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- お届け日 -->
+  <div id='container_delivery_schedule_date' style='display:none;'>
+    <h3 class="h6 fw-700 mb-2">お届け日</h3>
+    <fieldset>
+      <label>お届け予定日</label>
+      <div class="d-flex align-item-center">
+        <div class="short custom-select" style="width: 50%;">
+          <!-- お届け日の選択 -->
+          <select id='select_scheduled_to_be_delivered_at' class="md">
+            {% if order.recurring_item? %}
+              {% assign allow_nil = subs_order_settings['allow_nil_in_delivery_date?'] %}
+            {% else %}
+              {% assign allow_nil = order_settings['allow_nil_in_delivery_date?'] %}
+            {% endif %}
+            {% if allow_nil %}
+              <option value=''>指定なし</option>
+            {% endif %}
+            {% for d in option_scheduled_to_be_delivered_at %}
+              {% assign a = order.scheduled_to_be_delivered_at | date: "%Y-%m-%d" %}
+              {% assign b = d | date: "%Y-%m-%d" %}
+              <option value={{ d }} {% if a == b %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <span class="py-2 px-1">にお届け</span>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- お届け時間 -->
+  <div id='container_delivery_schedule_time' style='display:none;'>
+    <fieldset>
+      <label>お届け時間</label>
+      <div class="d-flex align-item-center">
+        <div class="short custom-select" style="width: 50%;">
+          <select class='md js-placeholder-select' id='select_scheduled_delivery_time'></select>
+        </div>
+        <span class="py-2 px-1">に配達</span>
+      </div>
+    </fieldset>
+  </div>
+
+  <!-- お届け予定日 -->
+  <div id='container_scheduled_delivery_dates' style='display:none;'>
+    <fieldset>
+      <label>お届け予定日</label>
+      <div id='scheduled_1st_delivery_date_text' style='display:none;' class="fs-14 fw-700 lh-2 mb-1"></div>
+      <div id='scheduled_2nd_delivery_date_text' style='display:none;' class="fs-14 fw-700 lh-2"></div>
+    </fieldset>
+  </div>
+
+</div>

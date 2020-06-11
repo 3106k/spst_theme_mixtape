@@ -1,0 +1,123 @@
+<div class="wrap">
+  <section class="product">
+    <div class="inner-float overflow">
+      <div class="col-4-6 overflow margin-bottom-20">
+        <div class="float-box-inside">
+          <div class="main-photo">
+            <center><img src="{{ product.master.thumbnails[0].url_large }}" alt=""></center>
+          </div>
+          <div class="sub-photo product-photos">
+            {% for thumbnail in product.master.thumbnails %}
+              <div><a href="{{ thumbnail.url_large }}"><img src="{{ thumbnail.url_large }}" alt=""></a></div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="col-6-4">
+        <div class="float-box-inside">
+          <div class="product-info">
+            <p class="margin-bottom-5 big"><a href="/shop/makers/{{ product.maker.id }}">{{ product.maker.name }}</a></p>
+            <h2 class="product-name">{{ product.name }}</h2>
+            <p class="product-price">
+              {% if product_min_price == product_max_price %}
+                {{ product_max_price | times:1.08 | number_to_currency: unit: '¥', format: '%u%n' }}
+              {% else %}
+                {{ product_max_price | times:1.08 | number_to_currency: unit: '¥', format: '%u%n' }}
+              {% endif %}<span> (税込)</span>
+            </p>
+            <p class="margin-bottom-10">商品ID: {{ product.master.sku }}</p>
+            <form method="post" action="/shop/cart/add">
+              <p>数量</p>
+              <select name="quantity" class="block margin-bottom-20 float-left">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <a href="" class="size-guide">サイズガイド</a>
+              {% if product_option_types == empty %}
+                <input type="hidden" name="variant_id" value="{{ variants[0].id }}"/>
+              {% else %}
+                <p class="clear">規格</p>
+                <select name="variant_id" class="block margin-bottom-20">
+                  <option value="" selected="selected">規格を選択</option>
+                  {% for variant in variants %}
+                    <option value="{{ variant.id }}">
+                      {% for product_option_type in product_option_types %}
+                        {{ product_option_type.name }}: {{ variant.option_values_to_h[product_option_type.name] }}
+                      {% endfor %}
+                    </option>
+                  {% endfor %}
+                </select>
+              {% endif %}
+              <div class="clear btn-cart-box">
+                <input type="submit" class="btn btn-cart margin-bottom-10" value="カートに入れる">
+                <p class="small">お届け目安はご注文確定から１０〜１４日です。</p>
+              </div>
+            </form>
+            <dl>
+              <dt>DETAILS</dt>
+              <dd>{{ product.description }}</dd>
+              {% for product_option_type in product_option_types %}
+                <dt>{{ product_option_type.presentation }}</dt>
+                <dd>
+                  {% capture option_values %}
+                    {% for variant in variants %}
+                      {{ variant.option_values_to_h[product_option_type.name] }}
+                    {% endfor %}
+                  {% endcapture %}
+                  
+                  {{ option_values | split: '' | uniq | join: ' ' }}
+                </dd>
+              {% endfor %}
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- slider2 -->
+  <!--<section>-->
+  <!--  <div class="inner overflow">-->
+  <!--    <h2 class="page-title text-center">- おすすめアイテム -</h2>-->
+  <!--    <div class="thin-img product-recommend">-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--      <div><a href="#"><img src="{{ file_root_path }}/img/top/See_by_Chloe.png" alt="" class="img-max"></a><p>FENDY</p></div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+  <!--</section>-->
+  <!-- slider2 -->
+</div>
+<script>
+  $(function(){
+    $(".product-info dd:not(:first)").css("display","none");
+    $(".product-info dt:first").addClass("selected");
+    $(".product-info dl dt").click(function(){
+      if($("+dd",this).css("display")=="none"){
+        $(".product-info dd").slideUp("fast");
+        $("+dd",this).slideDown("fast");
+        $(".product-info dt").removeClass("selected");
+        $(this).addClass("selected");
+      }   
+      }).mouseover(function(){
+        $(this).addClass("over");
+      }).mouseout(function(){
+        $(this).removeClass("over");
+      });
+  });
+
+  $(document).ready(function () {
+    $(".sub-photo a").click(function(){
+      $(".main-photo img").attr("src",$(this).attr("href")).attr("alt",$(this).text());
+      return false;
+    }); 
+  });
+</script>

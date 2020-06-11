@@ -1,0 +1,63 @@
+{{ 'shop/info' | javascript_include_tag }} 
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+お知らせ｜mixtape
+{% endcontent_for %}
+
+<div class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/">トップページ</a></li>
+      <li><a href="/shop/information">ニュース</a></li>
+      <li>{{ information.title }}</li>
+    </ul>
+    <h1>
+      <span>Information</span>
+      {{ information.title }}
+    </h1>
+
+    {% if information.thumbnail.url %}
+      <img src="{{ information.thumbnail.url }}" alt="{{ information.title }}" class="information_thumbnail">
+    {% endif %}
+
+    <div class="single-content">
+      <p class="date">{{ information.published_at | date: '%Y/%m/%d' }}</p>
+      {{ information.parsed_content }}
+    </div>
+
+    {% if last_information or next_information %}
+      <div class="mt-5">
+        <nav class="d-flex border-top-1 border-gray-200 pt-10 mb-30 mb-pc-36 news-detail-paging">
+          {% if last_information %}
+            <a href="/shop/information/{{ last_information.slug }}" class="page-prev mr-auto">PREV</a>
+          {% endif %}
+
+          {% if next_information %}
+            <a href="/shop/information/{{ next_information.slug }}" class="page-next ml-auto">NEXT</a>
+          {% endif %}
+        </nav>
+      </div>
+    {% endif %}
+
+
+    
+    <table class="info-table">
+      <tbody>
+        {% for customer_term in customer_terms %}
+          <tr>
+            <th>{{ customer_term.title }}</th>
+            <td>{{ customer_term.text }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+  </div>
+</div>

@@ -1,0 +1,38 @@
+{{ 'shop/info' | javascript_include_tag }} 
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+お知らせ｜mixtape
+{% endcontent_for %}
+
+<div class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/">トップページ</a></li>
+      <li><a href="/shop/information/">ニュース</a></li>
+      <li>お知らせ一覧</li>
+    </ul>
+    <h1>
+      <span>Information</span>
+      お知らせ一覧
+    </h1>
+
+    <div class="informations">
+      {% for information in informations %}
+        <div class="px-1 bloc">
+          <a href="/shop/information/{{ information.slug }}">{% if information.thumbnail.url %}{% assign src = information.thumbnail.url %}{% else %}{% assign src = 'missing' | image_url %}{% endif %}
+            <img src="{{ src }}" alt="{{ information.title }}" class="mb-1" />
+          </a>
+          <p class="date">{{ information.published_at | date: '%Y/%m/%d' }}</p>
+          <h2><a href="/shop/information/{{ information.slug }}">{{ information.title }}</a></h2>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>

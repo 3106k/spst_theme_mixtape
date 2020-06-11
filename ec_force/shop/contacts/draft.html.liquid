@@ -1,0 +1,107 @@
+{{ 'shop/contacts' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+お問い合わせ|mixtape
+{% endcontent_for %}
+
+<div id="contacts-form-view" class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/shop">トップページ</a></li>
+      <li>お問い合わせ</li>
+    </ul>
+
+    <h1 class="page-title"><span>Contact</span>お問い合わせ</h1>
+
+    <form id="new_contact" action="/shop/contact" accept-charset="UTF-8" method="post">
+      <input type="hidden" name="_method" value="put">
+      {% csrf_meta_tags %}
+
+      {{ 'notice' | flash: 'alert alert-success', 'text' }}
+      {{ 'alert' | flash: 'alert alert-danger', 'text' }}
+
+      <div class="form-box">
+        <fieldset><label>お問い合わせ種別</label>
+          <div class="custom-select">
+            <select name="contact[contact_type_ids]" id="contact_contact_type_ids" class="form-control">
+              {% for contact_type in contact_types %}
+                <option value="{{ contact_type.id }}" {% if contact.contact_types[0].id == contact_type.id %}selected{% endif %}>{{ contact_type.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </fieldset>
+        <fieldset><label>メールアドレス</label>
+          {% if customer_signed_in %}
+            <input type="email" class="validate[required,custom[email]]" name="contact[customer_attributes][email]" id="contact_customer_attributes_email" value="{{ current_customer.email }}" disabled>
+          {% else %}
+            <input type="email" class="validate[required,custom[email]]" name="contact[customer_attributes][email]" id="contact_customer_attributes_email" value="{{ contact.customer.email }}">
+          {% endif %}
+        </fieldset>
+        <fieldset>
+          <label>お名前</label>
+          {% if contact.id == nil and customer_signed_in %}
+            <div class="short">
+              <input class="validate[required]" type="text" name="contact[address_attributes][name01]" id="contact_address_attributes_name01" value="{{ current_customer.billing_address.name01 }}">
+              <input class="validate[required]" type="text" name="contact[address_attributes][name02]" id="contact_address_attributes_name02" value="{{ current_customer.billing_address.name02 }}">
+            </div>
+          {% else %}
+            <div class="short">
+              <input class="validate[required]" type="text" name="contact[address_attributes][name01]" id="contact_address_attributes_name01" value="{{ contact.address.name01 }}">
+              <input class="validate[required]" type="text" name="contact[address_attributes][name02]" id="contact_address_attributes_name02" value="{{ contact.address.name02 }}">
+            </div>
+          {% endif %}
+        </fieldset>
+        <fieldset><label>フリガナ</label>
+          {% if contact.id == nil and customer_signed_in %}
+            <div class="short">
+              <input class="validate[required, custom[katakana]]" type="text" name="contact[address_attributes][kana01]" id="contact_address_attributes_kana01" value="{{ current_customer.billing_address.kana01 }}">
+              <input class="validate[required, custom[katakana]]" type="text" name="contact[address_attributes][kana02]" id="contact_address_attributes_kana02" value="{{ current_customer.billing_address.kana02 }}">
+            </div>
+          {% else %}
+            <div class="short">
+              <input class="validate[required, custom[katakana]]" type="text" name="contact[address_attributes][kana01]" id="contact_address_attributes_kana01" value="{{ contact.address.kana01 }}">
+              <input class="validate[required, custom[katakana]]" type="text" name="contact[address_attributes][kana02]" id="contact_address_attributes_kana02" value="{{ contact.address.kana02 }}">
+            </div>
+          {% endif %}
+        </fieldset>
+        <fieldset>
+          <label>電話番号</label>
+          {% if contact.id == nil and customer_signed_in %}
+            <div class="phone">
+              <input class="validate[required, custom[integer]]" type="text" name="contact[address_attributes][tel01]" id="contact_address_attributes_tel01" value="{{ current_customer.billing_address.tel01 }}">
+              -
+              <input class="validate[required, custom[integer]]" type="text" name="contact[address_attributes][tel02]" id="contact_address_attributes_tel02" value="{{ current_customer.billing_address.tel02 }}">
+              -
+              <input class="validate[required, custom[integer]]" type="text" name="contact[address_attributes][tel03]" id="contact_address_attributes_tel03" value="{{ current_customer.billing_address.tel03 }}">
+            </div>
+          {% else %}
+            <div class="phone">
+              <input class="validate[required, custom[integer]]" type="text" name="contact[address_attributes][tel01]" id="contact_address_attributes_tel01" value="{{ contact.address.tel01 }}">
+              -
+              <input class="validate[required, custom[integer]]" type="text" name="contact[address_attributes][tel02]" id="contact_address_attributes_tel02" value="{{ contact.address.tel02 }}">
+              -
+              <input class="validate[required, custom[integer]]" type="text" name="contact[address_attributes][tel03]" id="contact_address_attributes_tel03" value="{{ contact.address.tel03 }}">
+            </div>
+          {% endif %}
+        </fieldset>
+        <fieldset class="mb-2"><label>お問い合わせ内容</label>
+          <textarea rows="10" class="form-control validate[required]" name="contact[content]" id="contact_content">{{ contact.content }}</textarea></dd>
+        </fieldset>
+
+        <div class="mb-5">
+          <input class="validate[required]" data-errormessage="プライバリーポリシーに同意していただく必要がございます。" name="agree" type="checkbox" id="agree" />          
+          <label for="agree" class="fs-12 lh-2 lh-pc-normal"> <a href="/shop/privacy" target="blank" class="text-red">プライバシーポリシー</a>
+            に同意</label>
+        </div>
+
+        <input class="btn purchase btn btn-black btn-block margin-bottom-20" type="submit" name="commit" value="確認画面へ">
+      </div>  
+    </form>
+  </div>
+</div>

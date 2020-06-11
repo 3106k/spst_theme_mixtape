@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="format-detection" content="telephone=no">
+  <script src="{{ file_root_path }}/js/jquery-1.11.1.min.js"></script>
+  <script src="{{ file_root_path }}/js/common.js"></script>
+  <script src="/assets/shop/orders.js"></script>
+  <link rel="stylesheet" type="text/css" href="{{ file_root_path }}/css/normalize.css" media="all">
+  <link rel="stylesheet" type="text/css" href="{{ file_root_path }}/css/base.css" media="all">
+  <link rel="stylesheet" type="text/css" href="{{ file_root_path }}/css/common.css" media="all">
+  <link rel="stylesheet" type="text/css" href="{{ file_root_path }}/css/style.css" media="all">
+</head>
+<body>
+{% include 'ec_force/shop/shared/nav.html' %}
+{{ content_for_layout }}
+{% include 'ec_force/shop/shared/footer.html' %}
+</body>
+</html>

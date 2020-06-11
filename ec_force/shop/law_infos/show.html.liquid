@@ -1,0 +1,77 @@
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+
+{% endcontent_for %}
+
+{% content_for title %}
+特定商取引法に基づく表示｜
+{% endcontent_for %}
+
+{{ 'shop/info' | javascript_include_tag }}
+
+<div class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/shop">トップページ</a></li>
+      <li>特定商取引法に基づく表示</li>
+    </ul>
+    <h1>
+      <span>Law information</span>
+      特定商取引法に基づく表示
+    </h1>
+    <table class="info-table">
+      <tbody>
+        {% if law_info.company_name %}<tr>
+          <th>販売業者名</th>
+          <td><!-- 販売業者名(任意) -->{{ law_info.company_name }}</td>
+        </tr>{% endif %}
+        {% if law_info.manager %}<tr>
+          <th>販売責任者</th>
+          <td><!-- 販売責任者(任意) -->{{ law_info.manager }}</td>
+        </tr>{% endif %}
+        <tr>
+          <th>所在地</th>
+          <td>
+            <!-- 所在地(郵便番号, 任意) -->{{ law_info.zip01 }}-{{ law_info.zip02 }}<br />
+            <!-- 所在地(住所, 任意) -->{{ law_info.prefecture_name }} {{ law_info.addr01 }} {{ law_info.addr02 }}
+          </td>
+        </tr>
+        {% if law_info.tel%}<tr>
+          <th>電話番号</th>
+          <td><!-- 電話番号(任意) -->{{ law_info.tel }}</td>
+        {% endif %}</tr>
+        {% if law_info.fax %}<tr>
+          <th>FAX番号</th>
+          <td><!-- FAX番号(任意) -->{{ law_info.fax }}</td>
+        </tr>{% endif %}
+        {% if law_info.email %}<tr>
+          <th>メールアドレス</th>
+          <td><!-- メールアドレス(任意) -->{{ law_info.email }}</td>
+        </tr>{% endif %}
+        {% if law_info.shop_name %}<tr>
+          <th>サイト名</th>
+          <td><!-- サイト名(任意) -->{{ law_info.shop_name }}</td>
+        </tr>{% endif %}
+        {% if law_info.url %}<tr>
+          <th>ホームページURL</th>
+          <td><!-- ホームページURL(任意) -->{{ law_info.url }}</td>
+        </tr>{% endif %}
+        {% if law_info.price %}<tr>
+          <th>販売価格</th>
+          <td><!-- 販売価格(任意) -->{{ law_info.price }}</td>
+        </tr>{% endif %}
+        {% if law_info.quantity %}<tr>
+          <th>販売数量</th>
+          <td><!-- 販売数量(任意) -->{{ law_info.quantity }}</td>
+        </tr>{% endif %}
+        <!-- 任意項目(任意) -->
+        {% for law_term in law_info.law_terms %}<tr>
+          <th>{{ law_term.title }}</th>
+          <td>{{ law_term.text }}</td>
+        </tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>

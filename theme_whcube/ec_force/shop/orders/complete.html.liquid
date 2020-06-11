@@ -1,0 +1,25 @@
+<script src="{{ file_root_path }}/js/jquery.placeholder.label.js"></script>
+<script src="{{ file_root_path }}/js/jquery.validate.min.js"></script>
+<script src="{{ file_root_path }}/js/messages_ja.js" charset="UTF-8"></script>
+<script src="{{ file_root_path }}/js/placeholder.js"></script>
+<link rel="stylesheet" href="{{ file_root_path }}/css/placeholder.css" type="text/css">
+
+<div class="wrap">
+  <div class="inner">
+    <h2 class="page-title">ご注文完了</h1>
+    <div class="text-center margin-bottom-20">
+      <p>ご注文いただきまして、誠にありがとうございます。<br>ご注文内容は、「ご注文確認メール」に記載して送信いたしました。<br>内容をご確認いただき、ご不明点がございましたらお問い合わせください。</p>
+    </div>
+    <table class="table-cart margin-bottom-20">
+      <tr>
+        <th class="width40">ご注文番号</th>
+        <td>{{ order.number }}</td>
+      </tr>
+      <tr>
+        <th>ご購入金額</th>
+        <td>{{ order.total | number_to_currency: format: '%n %u' }}</td>
+      </tr>
+    </table>
+    <center><a href="/shop/search" class="btn btn-black">ショップへ戻る</a></center>
+  </div>
+</div>

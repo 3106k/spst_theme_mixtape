@@ -1,0 +1,10 @@
+{% if shop_form_settings['coupon'] %}
+  <div class="mb-3" id="view-coupon">
+    <h2 class="page-title01 mb-8">クーポン利用</h2>
+    <div class="form-group mb-6">
+      <label class="fs-12">クーポンコード</label>
+      <input name="order[coupon_code]" class="form-control lg" value="{{ order.coupon.code }}" placeholder="例）SALE2019">
+    </div>
+  </div>
+{% endif %}
+

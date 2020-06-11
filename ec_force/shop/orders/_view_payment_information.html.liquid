@@ -1,0 +1,127 @@
+<div class="mb-3 bottom-space-big" id="view-payment-information">
+  <h3 class="h6 fw-700 mb-2">お支払い方法の選択</h3>
+
+  <fieldset>
+    <label class="fs-12">お支払い方法<span class="text-danger">※</span></label>
+    <div class="custom-select">
+      <select class="md js-placeholder-select validate[required]" id="payment_method_id" name="order[payment_attributes][payment_method_id]">
+        <option value='{{ order.payment.payment_method_id }}' selected>{{ order.payment.payment_method.name }}</option>
+      </select>
+    </div>
+    <div id="AmazonPayButtonWallet" class="amazon_pay_button_wallet" style="display:none;">
+      <input type="hidden" name="order[payment_attributes][source_attributes][access_token]"/>
+      <input name="order[payment_attributes][source_attributes][billing_agreement]" class="form-control md billing_agreement validate[required]" data-errormessage="ログインしてください">
+    </div>
+    <div id="payment_method_description"></div>
+  </fieldset>
+
+  <div id="view-amazon-pay-wallet-widget" class="mb-6" style="display:none;">
+    <div id="walletWidgetDiv" class="wallet_widget_wrapper"></div>
+    <!-- 同意チェックボックス -->
+    <div class="consent_wrapper fs-13">
+      <span class="consent_message">⬇ 下記にチェックを入れてください</span>
+      <span class="consent_mandatory">必須</span>
+      <input class="consent_checkbox validate[required]" type="checkbox" name="order[payment_attributes][source_attributes][consent]"/>
+    </div>
+    <div id="consentWidgetDiv" class="consent_widget_wrapper"></div>
+  </div>
+
+  <div class="form-group mb-6" id="view-payment-times" style="display:none;">
+    <label class="fs-12">お支払い回数</label>
+    <div class="custom-select">
+      <select class="md validate[required]" id="order_payment_times" name="order[payment_attributes][payment_times]">
+        <option>--</option>
+        {% for i in (2..24) %}
+          {% if order.payment and order.payment.payment_times == i %}
+            <option value='{{ i }}' selected>{{ i }}</option>
+          {% else %}
+            <option value='{{ i }}'>{{ i }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div id="view-credit-card-information" class="mb-6" style="display:none;">
+    <input type="hidden" name="order[payment_attributes][source_attributes][access_token]" id="input-cc-access-token" disabled>
+
+    <fieldset>
+      <!-- クレジットカードの選択 -->
+      {% if current_customer_has_card %}
+      <label class="fs-12">クレジットカード</label>
+      <div class="full">
+        <select name="order[payment_attributes][source_id]" id="card-id" class="md placeholder js-placeholder-select">
+          {% for card in current_customer.credit_cards %}
+            <option value='{{ card.id }}' {% if card.default %}selected{% endif %}>{{ card.display_number }}</option>
+          {% endfor %}
+          {% if current_customer.credit_cards.size < 5 %}
+            <option value="0">新しく登録する</option>
+          {% endif %}
+        </select>
+      </div>
+    </fieldset>
+    {% endif %}
+
+    <!-- クレジットカード番号の入力 -->
+    <div class="form-group mb-6" id="view-input-card-number" style="{% if current_customer_has_card %}display:none;{% endif %}">
+      <fieldset>
+        <label class="fs-12">クレジット番号<span class="text-danger">※</span></label>
+        
+        <div class="full">
+          <input type="hidden" name="order[payment_attributes][source_attributes][default]" id="input-cc-default" {% if current_customer_has_card %}disabled{% endif %} value="1">
+          <input type="text" name="order[payment_attributes][source_attributes][number]" id="input-cc-number" {% if current_customer_has_card %}disabled{% endif %} class="form-control md validate[required, maxSize[16]]" placeholder="例：1111222233334444" >
+          <p class="small">数字のみで続けて入力してください。</p>
+        </div>
+    </div>
+
+    <!-- クレジットカード有効期限の入力 -->
+    <div class="form-group mb-6" id="view-input-card-expire" style={% if current_customer_has_card %}"display:none;"{% endif %}>
+      <fieldset>
+        <label class="fs-12">カード有効期限<span class="text-danger">※</span></label>
+        <div class="birth short">
+          <div class="custom-select">
+            <select name="order[payment_attributes][source_attributes][month]" id="input-cc-month" class="md placeholder js-placeholder-select validate[required]" {% if current_customer_has_card %}disabled{% endif %}>
+              <option value="">月</option>
+              {% for m in (1..12) %}
+                <option value='{{ m }}'{% if order.payment.source.month == m %} selected {% endif %}>{{ m }}月</option>
+              {% endfor %}
+            </select>
+          </div>&nbsp;
+          <div class="custom-select">
+            <select name="order[payment_attributes][source_attributes][year]" id="input-cc-year" class="md placeholder js-placeholder-select validate[required]" {% if current_customer_has_card %}disabled{% endif %}>
+              <option value="">年</option>
+              {% assign now_year = "now" | date: "%Y" | minus: 2000 %}
+              {% assign later_15_years = "now" | date: "%Y" | plus: 15 | minus: 2000 %}
+              {% for y in (now_year..later_15_years) %}
+                <option value='{{ y }}'{% if order.payment.source.year == y %} selected {% endif %}>{{ y }}年</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- クレジットカード名義人の入力 -->
+    <div class="form-group mb-6" id="view-input-card-name" style={% if current_customer_has_card %}"display:none;"{% endif %}>
+      <fieldset>
+        <label class="fs-12">カードの名義人<span class="text-danger">※</span></label>
+        <div class="full">
+          <input type="text" name="order[payment_attributes][source_attributes][name]" id="input-cc-name" class="form-control md validate[required,custom[onlyLetterSp]]" value='{{ order.payment.source.name }}' {% if current_customer_has_card %}disabled{% endif %} placeholder="例 : TARO YAMADA">
+          <p class="small">カードの記載どおり入力してください。</p>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- セキュリティコードの入力 -->
+    <div class="form-group mb-6" id="view-input-card-cvv" {% if current_customer_has_card %}style="display:none;"{% endif %}>
+      <fieldset>
+        <label class="fs-12">セキュリティコード</label>
+        <div class="short">
+          <input type="text" name="cvv" id="input-cc-cvv" class="form-control md validate[required]" {% if current_customer_has_card %}disabled{% endif %}>
+          <!-- セキュリティコードの説明画像 -->
+          <img src="{{ 'cvv_sample.jpg' | image_url }}">
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</div>

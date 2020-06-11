@@ -1,0 +1,148 @@
+{{ 'shop/products' | javascript_include_tag }}
+
+{% content_for meta_description %}
+【公式オンラインショップ】
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+{{ product.name }}|mixtape
+{% endcontent_for %}
+
+<div class="wrap">
+  <section class="product" id="product-show-view">
+    <div class="inner-float overflow">
+      <div class="col-4-6 overflow margin-bottom-20">
+        <div class="float-box-inside">
+          {% if product.thumbnail.url %}
+            {% assign src = product.thumbnail.url %}
+          {% else %}
+            {% assign src = 'missing' | image_url %}
+          {% endif %}
+          <div class="main-photo">
+            <center>
+              <img src="{{ src }}" id="main-img">
+            </center>
+          </div>
+          <div id="sub-images-view"></div>
+        </div>
+      </div>
+      <div class="col-6-4">
+        <div class="float-box-inside summary">
+          <div class="product-info">
+
+            <ul class="breadcrumb">
+              {% for category in product.product_categories %}
+                <li><a href="/shop/product_categories/{{category.id}}">{{ category.name }}</a></li>
+              {% endfor %}
+            </ul>
+
+            <h1 class="product-name">{{product.name}}</h1>
+            <p class="product-price">
+              {% if product_min_price == product_max_price %}
+                {{ product_max_price | times:1.08 | number_to_currency: unit: '¥', format: '%u %n' }}
+              {% else %}
+                {{ product_max_price | times:1.08 | number_to_currency: unit: '¥', format: '%u %n' }}
+              {% endif %}<span> (税込)</span>
+            </p>
+
+            <div class="summary_bloc">
+              <p class="margin-bottom-10">商品ID: {{ product.master.sku }}</p>
+              <form method="post" action="/shop/cart/add">
+                <dl>
+                  <dt>数量</dt>
+                  <dd>
+                    <div class="custom-select" style="max-width: 350px">
+                      <select id="quantity" name="quantity" style="display:none;"></select>
+                    </div>
+                    <!--<a href="" class="size-guide">サイズガイド</a>   -->
+                  </dd>
+                  <dd>
+                    <!-- オプション選択 -->
+                    <input id="variant-id" type="hidden" name="variant_id" value="{{ product.master.id }}" />
+                    <div id="option_types"></div>
+                  </dd>
+                </dl>
+                <input type="submit" class="btn btn-cart margin-bottom-10" value="カートに入れる">
+                <p class="small">お届け目安はご注文確定から１０〜１４日です。</p>
+              </form>
+            </div>
+            
+            <div class="detail_bloc">
+              <dl>
+                <dt>DETAILS</dt>
+                <dd>
+                  {{ product.parsed_description | newline_to_br}}
+                </dd>
+                {% for product_option_type in product_option_types %}
+                  <dt>{{ product_option_type.presentation }}</dt>
+                  <dd>
+                    {% assign count = 0 %}
+                    {% capture option_values %}
+                      {% for variant in variants %}
+                        {{ variant.option_values_to_h[product_option_type.name] }}-
+                      {% assign count = count | plus: 1 %}{% endfor %}
+                    {% endcapture %}
+
+                    {{ option_values | split: '-' | uniq | join: ' |' }}
+                  </dd>{% endfor %}
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ {% if base_info.use_related_products_on_detail? and product.active_related_products.size != 0 %}
+   <section>
+     <div class="inner overflow">
+       <h2 class="h4 page-title text-center">- おすすめアイテム -</h2>
+       <div class="thin-img product-recommend">
+         
+         <!-- 関連商品一覧 -->
+         {% for related_product in product.active_related_products %}
+           <div>
+             <a href="/shop/products/{{ related_product.master.sku }}">
+               {% if related_product.thumbnail.url %}{% assign src = related_product.thumbnail.url %}{% else %}{% assign src = 'missing' | image_url %}{% endif %}
+               <img src="{{ src }}" class="img-max" alt="{{ related_product.name | truncate: 35 }}" />
+             </a>
+             <h3>{{ related_product.name | truncate: 35 }}</h3>
+             <p class="price">¥ {{ related_product.master.list_price | number_to_currency: format: '%n' }} <span class="discount">(15%OFF)</span></p>
+           </div>
+         {% endfor %}
+       </div>
+     </div>
+   </section>
+ {% endif %}
+</div>
+<script>
+
+ $(window).on('load resize', function(){
+   $('#main-img').css({'height': $('.main-photo').width() + 'px', 'width': 'auto', 'object-fit': 'cover' });
+   $(".img-wrap li").css({
+       width: "calc(20%)",
+       height: $(".img-wrap li").width()+'px',
+       "margin-bottom": "8px"
+   });
+   $('.slick-slide img').css({
+     'height': $('.slick-slide img').width()+'px',
+     'object-fit': 'cover'
+     });
+ });
+</script>
+
+<style>
+ .img-wrap {
+   display: flex;
+ }
+ .img-wrap .img-box+ .img-box {
+   margin-left: 10px;
+ }
+ .main-img {
+   object-fit: cover;
+   width: auto;
+ }
+</style>

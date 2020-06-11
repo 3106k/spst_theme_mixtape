@@ -1,0 +1,197 @@
+<script src="{{ file_root_path }}/js/jquery.placeholder.label.js"></script>
+<script src="{{ file_root_path }}/js/jquery.validate.min.js"></script>
+<script src="{{ file_root_path }}/js/messages_ja.js" charset="UTF-8"></script>
+<script src="{{ file_root_path }}/js/placeholder.js"></script>
+<link rel="stylesheet" href="{{ file_root_path }}/css/placeholder.css" type="text/css">
+
+<div class="wrap">
+  <!-- cart -->
+  <section class="cart">
+    <div class="inner">
+      <h2 class="page-title">ご注文内容をご確認ください</h1>
+      
+      <h3 class="margin-bottom-10">ご注文内容</h3>
+      <table class="table-cart margin-bottom-20">
+        <tr>
+          <th>商品名</th>
+          <th>単価</th>
+          <th>個数</th>
+          <th>小計</th>
+        </tr>
+        {% for order_item in order.order_items %}
+          <tr>
+            <td>
+              {{ order_item.product.name }}
+              {% for option_value in order_item.variant.option_values %}
+                / {{ option_value.name }}
+              {% endfor %}
+            </td>
+            <td class="text-right">{{ order_item.variant.sales_price | number_to_currency: format: '%n %u' }}</td>
+            <td class="text-center">{{ order_item.quantity }}</td>
+            <td class="text-right">{{ order_item.price | times: order_item.quantity | number_to_currency: format: '%n %u' }}</td>
+          </tr>
+        {% endfor %}
+        <tr>
+          <td colspan=3>商品合計</td>
+          <td class="text-right">{{ order.subtotal | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <td colspan=3 class="text-right">割引</td>
+          <td class="text-right">{{ order.discount | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <td colspan=3 class="text-right">その他（ラッピング等）</td>
+          <td class="text-right">{{ order.misc_fee | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <td colspan=3 class="text-right">送料</td>
+          <td class="text-right">{{ order.deliv_fee | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <td colspan=3 class="text-right">手数料</td>
+          <td class="text-right">{{ order.charge | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <td colspan=3 class="text-right">消費税</td>
+          <td class="text-right">{{ order.tax | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <td colspan=3 class="text-right">合計</td>
+          <td class="text-right">{{ order.total | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      </table>
+      
+      <!-- form -->
+      <div id='confirm-view'>
+        <form action="/shop/order/confirm" method="post">
+          <h3 class="margin-bottom-10">購入者情報</h3>
+          <table class="table-cart margin-bottom-20">
+            <tr>
+              <th class="width40">お名前</th>
+              <td>{{ order.billing_address.full_name }}</td>
+            </tr>
+            <tr>
+              <th>フリガナ</th>
+              <td>{{ order.billing_address.full_kana }}</td>
+            </tr>
+            <tr>
+              <th>住所</th>
+              <td>〒{{ order.billing_address.full_zip}} {{ order.billing_address.full_address }}</td>
+            </tr>
+            <tr>
+              <th>電話番号</th>
+              <td>{{ order.billing_address.full_tel }}</td>
+            </tr>
+            <tr>
+              <th>メールアドレス</th>
+              <td>{{ order.email }}</td>
+            </tr>
+          </table>
+      
+          <h3 class="margin-bottom-10">お届け先情報</h3>
+          <table class="table-cart margin-bottom-20">
+            <tr>
+              <th class="width40">お名前</th>
+              <td>{{ order.shipping_address.full_name }}</td>
+            </tr>
+            <tr>
+              <th>フリガナ</th>
+              <td>{{ order.shipping_address.full_kana }}</td>
+            </tr>
+            <tr>
+              <th>住所</th>
+              <td>〒{{ order.shipping_address.full_zip}} {{ order.shipping_address.full_address }}</td>
+            </tr>
+            <tr>
+              <th>電話番号</th>
+              <td>{{ order.shipping_address.full_tel }}</td>
+            </tr>
+            <tr>
+              <th>メールアドレス</th>
+              <td>{{ order.email }}</td>
+            </tr>
+          </table>
+      
+          <h3 class="margin-bottom-10">お支払い方法</h3>
+          <table class="table-cart margin-bottom-20">
+            <tr>
+              <th class="width40">お支払い方法</th>
+              <td>{{ order.payment.payment_method.name }}</td>
+            </tr>
+            {% if order.payment.payment_method.one_time_payment? %}
+              <tr>
+                <th>カード番号</th>
+                <td>{{ order.payment.source.display_number }}</td>
+              </tr>
+              <tr>
+                <th>カード有効期限</th>
+                <td>{{ order.payment.source.month }} / {{ order.payment.source.year }}</td>
+              </tr>
+              <tr>
+                <th>カード名義</th>
+                <td>{{ order.payment.source.name }}</td>
+              </tr>
+            {% elsif order.payment.payment_method.installment_payment? %}
+              <tr>
+                <th>お支払い回数</th>
+                <td>{{ order.payment.payment_times }}</td>
+              </tr>
+              <tr>
+                <th>カード番号</th>
+                <td>{{ order.payment.source.display_number }}</td>
+              </tr>
+              <tr>
+                <th>カード有効期限</th>
+                <td>{{ order.payment.source.month }} / {{ order.payment.source.year }}</td>
+              </tr>
+              <tr>
+                <th>カード名義</th>
+                <td>{{ order.payment.source.name }}</td>
+              </tr>
+            {% elsif order.payment.payment_method.revolving_payment? %}
+              <tr>
+                <th>カード番号</th>
+                <td>{{ order.payment.source.display_number }}</td>
+              </tr>
+              <tr>
+                <th>カード有効期限</th>
+                <td>{{ order.payment.source.month }} / {{ order.payment.source.year }}</td>
+              </tr>
+              <tr>
+                <th>カード名義</th>
+                <td>{{ order.payment.source.name }}</td>
+              </tr>
+            {% endif %}
+          </table>
+     
+          <h3 class="margin-bottom-10">お届け日</h3>
+          <table class="table-cart margin-bottom-20">
+            <tr>
+              <th class="width40">お届け日</th>
+              <td>{{ order.scheduled_to_be_delivered_at | date: '%Y-%m-%d' }} {{ order.scheduled_delivery_time }}</td>
+            </tr>
+            {% if order.subs_order %}
+              <tr>
+                <th>２回目お届け日</th>
+                <td>{{ order.subs_order.scheduled_to_be_delivered_at | date: '%Y-%m-%d' }}</td>
+              </tr>
+            {% endif %}
+          </table>
+      
+          <h3 class="margin-bottom-10">通信欄</h3>
+          <table class="table-cart margin-bottom-20">
+            <tr>
+              <th class="width40">通信欄</th>
+              <td><textarea name="order[remark]" rows="5" style="width:100%;" placeholder="・代引きをご利用のお客様&#13;&#10;日付指定をお受付致しかねます。ご注意ください。&#13;&#10;&#13;&#10;・領収書をご希望のお客様&#13;&#10;通信欄に「領収書希望」とご明記下さい。&#13;&#10;&#13;&#10;・納品書の価格非表記をご希望のお客様&#13;&#10;通信欄に「納品書に価格を表記しない」とご明記下さい。"></textarea></td>
+            </tr>
+          </table>
+          <input name="_method" type="hidden" value="put">
+          <center><a href="/shop/order/new" class="margin-bottom-10 block">戻る</a></center>
+          <center><input type="submit" value="この内容で注文する" class="btn btn-black margin-bottom-20"></center>
+        </form>
+        <p class="small">当サイトはSSL暗号化通信に対応しております。ご注文内容やクレジットカード番号など、お客様の大切な情報は暗号化して送信されます。第三者から解読できないようになっております。</p>
+      </div>
+      <!-- form -->
+    </div>
+  </section>
+</div>

@@ -1,0 +1,37 @@
+{{ 'shop/info' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+
+{% endcontent_for %}
+
+{% content_for title %}
+利用規約｜
+{% endcontent_for %}
+
+<div class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/shop">トップページ</a></li>
+      <li>ご利用規約</li>
+    </ul>
+    <h1>
+      <span>Terms of service</span>
+      ご利用規約
+    </h1>
+    <table class="info-table">
+      <tbody>
+        {% for customer_term in customer_terms %}
+          <tr>
+            <th>{{ customer_term.title }}</th>
+            <td>{{ customer_term.text }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+  </div>
+</div>

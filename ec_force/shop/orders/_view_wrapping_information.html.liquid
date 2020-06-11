@@ -1,0 +1,21 @@
+{% if shop_form_settings['wrapping'] %}
+  <div class="mb-14 bottom-space-big" id="view-wrapping-information">
+    <h3 class="page-sub-title mb-8">ラッピングの選択</h2>
+      <fieldset>
+        <label class="fs-12">ラッピング<span class="required-icon">※</span></label>
+        <div class="custom-select">
+          <select id='wrapping-id' name='order[wrapping_id]' class="md placeholder js-placeholder-select">
+            <option value="">なし</option>
+            {% for wrapping in wrappings %}
+              <option value="{{ wrapping.id }}" {% if order.wrapping_id == wrapping.id %}selected{% endif %} data-thumbnail-url="{{ wrapping.thumbnail.url }}">{{ wrapping.name }} {{ wrapping.price | number_to_currency : format: '%n %u' }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </fieldset>
+
+      <div id='wrapping-thumbnail-box' style='display:none;'>
+        <img id='wrapping-thumbnail' src=''>
+      </div>
+  </div>
+{% endif %}
+

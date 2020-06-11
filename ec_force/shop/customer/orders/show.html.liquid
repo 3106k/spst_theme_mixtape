@@ -1,0 +1,196 @@
+{{ 'shop/customer/orders' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+購入履歴詳細｜
+{% endcontent_for %}
+
+
+<div class="wrap">
+  <section class="cart">
+    <div class="inner">
+      <h2 class="page-title">購入履歴詳細</h1>
+      <h3 class="margin-bottom-10"></h3>
+      <table class="table-cart bottom-space-big">
+        <tr class="line">
+          <th class="width40">購入番号</th>
+          <td>{{ order.number }}</td>
+        </tr>
+        <tr>
+          <th>商品名</th>
+          <td>{{ order.order_items | map: 'name_with_tax' | join: ', ' }}</td>
+        </tr>
+        <tr>
+          <th>単価</th>
+          <td>{{ order.order_items | map: 'price' | join: ', ' }}</td>
+        </tr>
+        <tr>
+          <th>個数</th>
+          <td>{{ order.order_items | map: 'quantity' | join: ', ' }}</td>
+        </tr>
+        <tr>
+          <th>小計</th>
+          <td>{{ order.subtotal | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% if order.subtotal8 > 0 %}
+        <tr>
+          <th>（8%対象小計）</th>
+          <td>{{ order.subtotal8 | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% endif %}
+
+      {% if order.subtotal10 > 0 %}
+        <tr>
+          <th>（10%対象小計）</th>
+          <td>{{ order.subtotal10 | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>割引</th>
+        <td>{{ -order.discount_not_with_point | number_to_currency: format: '%n %u' }}</td>
+      </tr>
+      {% if order.subtotal8 > 0 %}
+        <tr>
+          <th>（8%対象割引）</th>
+          <td>{{ -(order.subtotal8) | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% endif %}
+
+      {% if order.subtotal10 > 0 %}
+        <tr>
+          <th>（10%対象割引）</th>
+          <td>{{ -(order.subtotal10) | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% endif %}
+
+      {% if order.discount_point_amount > 0 and !order.use_point_include_tax? %}
+        <tr>
+          <th>ポイント利用</th>
+          <td>{{ -(order.discount_point_amount) | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% endif %}
+      <tr>
+        <th>ラッピング代金</th>
+        <td>{{ order.misc_fee | number_to_currency: format: '%n %u' }}</td>
+      </tr>
+
+        <tr>
+          <th>送料</th>
+          <td>{{ order.deliv_fee | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <th>手数料</th>
+          <td>{{ order.charge | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <th>消費税</th>
+          <td>{{ order.tax | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% if order.tax8 > 0 %}
+        <tr>
+          <th>（8%対象消費税）</th>
+          <td>{{ order.tax8 | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% endif %}
+
+      {% if order.tax10 > 0 %}
+        <tr>
+          <th>（10%対象消費税）</th>
+          <td>{{ order.tax10 | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+      {% endif %}
+
+        <tr>
+          <th>合計</th>
+          <td>{{ order.total | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <th>お支払い合計</th>
+          <td>{{ order.payment_total | number_to_currency: format: '%n %u' }}</td>
+        </tr>
+        <tr>
+          <th>お支払い方法</th>
+          <td>{{ order.payment.payment_method.name }}</td>
+        </tr>
+        <tr>
+          <th>分割回数</th>
+          <td>{{ order.payment.payment_times }}</td>
+        </tr>
+        <tr>
+          <th>対応状況</th>
+          <td>{{ order.human_state_name }}</td>
+        </tr>
+        <tr>
+          <th>決済状況</th>
+          <td>{{ order.payment.human_state_name }}</td>
+        </tr>
+        <tr>
+          <th>配送業者</th>
+          <td>{{ order.shipping_carrier.name }}</td>
+        </tr>
+        <tr>
+          <th>配送伝票番号</th>
+          <td>{{ order.shipping_slip }}</td>
+        </tr>
+        <tr>
+          <th>発送予定日</th>
+          <td>{{ order.scheduled_to_be_shipped_at | date: '%Y/%m/%d' }}</td>
+        </tr>
+        <tr>
+          <th>発送完了日</th>
+          <td>{{ order.shipped_at | date: '%Y/%m/%d' }}</td>
+        </tr>
+        <tr>
+          <th>配送予定日</th>
+          <td>{{ order.scheduled_to_be_delivered_at | date: '%Y/%m/%d' }}</td>
+        </tr>
+        <tr>
+          <th>配送完了日</th>
+          <td>{{ order.delivered_at | date: '%Y/%m/%d' }}</td>
+        </tr>
+        <tr>
+          <th>お届け時間</th>
+          <td>{{ order.scheduled_delivery_time }}</td>
+        </tr>
+        <tr>
+          <th>購入日時</th>
+          <td>{{ order.completed_at | date: '%Y/%m/%d %H:%M' }}</td>
+        </tr>
+      </table>
+
+      <h3 class="margin-bottom-10">お届け先住所</h3>
+      <table class="table-cart bottom-space-big">
+        <tr>
+          <th class="width40">お名前</th>
+          <td>{{ order.shipping_address.full_name }}</td>
+        </tr>
+        <tr>
+          <th>お名前（カナ）</th>
+          <td>{{ order.shipping_address.full_kana }}</td>
+        </tr>
+        <tr>
+          <th>郵便番号</th>
+          <td>〒 {{ order.shipping_address.full_zip }}</td>
+        </tr>
+        <tr>
+          <th>住所</th>
+          <td>{{ order.shipping_address.full_address }}</td>
+        </tr>
+        <tr>
+          <th>電話番号</th>
+          <td>{{ order.shipping_address.full_tel }}</td>
+        </tr>
+        <tr>
+          <th>FAX 番号</th>
+          <td>{{ order.shipping_address.full_fax }}</td>
+        </tr>
+      </table>
+      <center><a href="/shop/customer/orders" class="btn btn-black">一覧へ戻る</a></center>
+    </div>
+  </section>
+</div>

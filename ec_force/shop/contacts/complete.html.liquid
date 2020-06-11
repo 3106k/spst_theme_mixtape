@@ -1,0 +1,40 @@
+{{ 'shop/contacts' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+お問い合わせありがとうござました|mixtape
+{% endcontent_for %}
+
+<div id="contacts-form-view" class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/shop">トップページ</a></li>
+      <li>お問い合わせ</li>
+    </ul>
+
+    <h1 class="page-title">
+      <span>Contact</span>
+      お問い合わせ完了
+    </h1>
+
+    <div class="form-box mb-5">
+      <!-- お客様のお問い合わせ番号(任意) -->
+      <p class="fs-13 lh-2 mb-10">
+        お問い合わせありがとうございます。<br />
+        お客様のお問い合わせ番号は{{ contact.number }}です。<br />
+        数分以内に確認メールが{{ contact.email }}宛に送信されます。<br />
+        メールボックスをご確認ください。
+      </p>
+
+      <a class="d-block text-center margin-bottom-20" href="/">トップに戻る</a>
+    </div>
+  </div>
+</div>
+<!-- 戻るボタン -->
+
+

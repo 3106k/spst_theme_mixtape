@@ -1,0 +1,26 @@
+<script src="/assets/shop/base.js"></script>
+<div class="wrap">
+  <section class="cart">
+    <div class="inner">
+      <h2 class="page-title">お気に入り</h1>
+        {% if favorites == empty %}
+          <p>お気に入りは登録されていません。</p>
+        {% else %}
+          <table class="table-cart bottom-space-big">
+            <tr class="line">
+              <th>商品画像</th>
+              <th>商品名</th>
+              <th></th>
+            </tr>
+            {% for favorite in favorites %}
+              <tr>
+                <td><center><img src="{{ favorite.product.master.thumbnails[0].url }}" width=50></center></td>
+                <td><a href="/shop/products/{{ favorite.product.master.sku }}">{{ favorite.product.name }}</a></td>
+                <td><center><a href="/shop/customer/favorites/{{ favorite.id }}" data-confirm="本当に削除しますか?" data-method="delete" class="delete">削除</center></td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% endif %}
+    </div>
+  </section>
+</div>

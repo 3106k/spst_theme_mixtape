@@ -1,0 +1,176 @@
+
+phhhh
+<header>
+  <!-- nav & header mobile & ipad -->
+  <div class="mobile ipad">
+    <nav class="nav-mobile">
+      <p class="nav-mobile-title">アイテムを探す</p>
+      <p class="nav-mobile-gender-w">WOMEN<img src="{{ file_root_path }}/img/parts/plus.png" class="nav-mobile-plus-w"><img src="{{ file_root_path }}/img/parts/minus.png" class="nav-mobile-minus-w"></p>
+      <div class="nav-mobile-women">
+        <ul>
+          <li><a href="/shop/search?q%5Bvariants_is_new_eq%5D=true&q%5Bby_product_category_name%5D=レディース">NEW</a></li>
+          <li><a href="#">BRANDS</a></li>
+          {% for product_category in product_categories %}
+            {% assign ignore_product_categories = 'レディース メンズ' | split: ' ' %}
+            {% unless ignore_product_categories contains product_category.name %}
+              <li><a href="/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=レディース">{{ product_category.name }}</a></li>
+            {% endunless %}
+          {% endfor %}
+          <li><a href="/shop/search?q%5Bvariants_is_sale_eq%5D=true&q%5Bby_product_category_name%5D=レディース" class="text-red">SALE</a></li>
+          <li><a href="/shop/pages/aboutus">ABOUT US2</a></li>
+        </ul>
+      </div>
+      <p class="nav-mobile-gender-m">MEN<img src="{{ file_root_path }}/img/parts/plus.png" class="nav-mobile-plus-m"><img src="{{ file_root_path }}/img/parts/minus.png" class="nav-mobile-minus-m"></p>
+      <div class="nav-mobile-men">
+        <ul>
+          <li><a href="/shop/search?q%5Bvariants_is_new_eq%5D=true&q%5Bby_product_category_name%5D=メンズ">NEW</a></li>
+          <!--<li><a href="#">BRANDS</a></li>-->
+          {% for product_category in product_categories %}
+            {% assign ignore_product_categories = 'レディース メンズ' | split: ' ' %}
+            {% unless ignore_product_categories contains product_category.name %}
+              <li><a href="/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=メンズ">{{ product_category.name }}</a></li>
+            {% endunless %}
+          {% endfor %}
+          <li><a href="/shop/search?q%5Bvariants_is_sale_eq%5D=true&q%5Bby_product_category_name%5D=メンズ" class="text-red">SALE</a></li>
+          <li><a href="/shop/pages/aboutus">ABOUT US</a></li>
+        </ul>
+      </div>
+    </nav>
+    <div class="header-inner-mobile">
+      <span class="number">{{ order.order_items.size }}</span>
+      <img src="{{ file_root_path }}/img/parts/menu_stack.png" class="toggle-mobile open">
+      <a href="/shop/cart"><img src="{{ file_root_path }}/img/parts/cart.png" class="cart-mobile"></a>
+      {% if customer_signed_in == false %}
+        <a href="/shop/customers/sign_in"><img src="{{ file_root_path }}/img/parts/signup.png" class="signup-mobile"></a>
+      {% else %}
+        <a href="/shop/customer"><img src="{{ file_root_path }}/img/parts/favorited.png" class="mypage-mobile"></a>
+      {% endif %}
+      <h1><a href="/"><img src="{{ file_root_path }}/img/parts/whitecube_logo.png" alt="" class="logo-mobile"></a></h1>
+    </div>
+    <div class="search-area-mobile">
+      <form action="/shop/search" method="get">
+        <input type="text" name="q[name_or_maker_name_cont]" placeholder="ブランド名、キーワードを入力" value={{ params['name_or_maker_name_cont'] }}>
+        {% if cookies['gender'] == 'men' %}
+          <input type="hidden" name="q[by_product_category_name]" value="メンズ">
+        {% else %}
+          <input type="hidden" name="q[by_product_category_name]" value="レディース">
+        {% endif %}
+      </form>
+    </div>
+    <div class="gender-pick-area-mobile">
+      <ul>
+        {% if cookies['gender'] == 'men' %}
+          <li class="women-mobile"><a href="javascript:void(0);">レディース</a></li>
+          <li class="men-mobile"><a href="javascript:void(0);" class="active">メンズ</a></li>
+        {% else %}
+          <li class="women-mobile"><a href="javascript:void(0);" class="active">レディース</a></li>
+          <li class="men-mobile"><a href="javascript:void(0);">メンズ</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  <!-- nav & header mobile & ipad -->
+  <!-- nav & header pc -->
+  <div class="pc">
+    <div class="header-inner-pc">
+      <h1><a href="/"><img src="{{ file_root_path }}/img/parts/whitecube_logo.png" alt="" class="logo-pc"></a></h1>
+      <ul class="header-main-pc">
+        <li class="gender-pick-pc">
+          <span class="women-pc">WOMEN</span><img src="{{ file_root_path }}/img/parts/arrow9.png" class="gender-pick-pc-arrow-w" style="display:{% if cookies['gender'] != 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+        </li>
+        <li class="gender-pick-pc">
+          <span class="men-pc">MEN</span><img src="{{ file_root_path }}/img/parts/arrow9.png" class="gender-pick-pc-arrow-m" style="display:{% if cookies['gender'] == 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+        </li>
+        <li class="cart-pc"><a href="/shop/cart"><img src="{{ file_root_path }}/img/parts/cart.png"></a>
+          <span class="number">{{ order.order_items.size }}</span>
+        </li>
+        {% if customer_signed_in == false %}
+          <li class="login-pc"><a href="/shop/customers/sign_in">LOGIN</a></li>
+        {% else %}
+          <li class="mypage-pc"><a href="/shop/customer"><img src="{{ file_root_path }}/img/parts/favorited.png"></a></li>
+        {% endif %}
+        <li class="search-pc">
+          <form action="/shop/search" method="get">
+            <input type="text" name="q[name_or_maker_name_cont]" value={{ params['name_or_maker_name_cont'] }}>
+            {% if cookies['gender'] == 'men' %}
+              <input type="hidden" name="q[by_product_category_name]" value="メンズ">
+            {% else %}
+              <input type="hidden" name="q[by_product_category_name]" value="レディース">
+            {% endif %}
+          </form>
+        </li>
+      </ul>
+    </div>
+    <nav class="nav-pc">
+      <div class="nav-pc-women" style="display:{% if cookies['gender'] != 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+        <ul class="nav-pc-main">
+          <li><a href="/shop/search?q%5Bvariants_is_new_eq%5D=true&q%5Bby_product_category_name%5D=レディース">NEW</a></li>
+          <li><a href="javascript:void(0);">BRANDS</a>
+            <div>
+              <ul>
+                {% capture makers2 %}
+                  {% for maker in makers %}
+                    |{{ maker.name }}#{{ maker.id }}
+                  {% endfor %}
+                {% endcapture %}
+
+                {% assign sortedmakers = makers2 | split: '|' | sort %}
+
+                {% for maker in sortedmakers %}
+                  {% assign makeritems = maker | split: '#' %}
+
+                  {% if makeritems[0] != blank && makeritems[1] != blank %}
+                    <li><a href='/shop/makers/{{ makeritems[1] | strip }}?q%5Bby_product_category_name%5D=レディース'>{{ makeritems[0] }}</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
+          {% for product_category in product_categories %}
+            {% assign ignore_product_categories = 'レディース メンズ' | split: ' ' %}
+            {% unless ignore_product_categories contains product_category.name %}
+              <li><a href="/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=レディース">{{ product_category.name }}</a></li>
+            {% endunless %}
+          {% endfor %}
+          <li><a href="/shop/search?q%5Bvariants_is_sale_eq%5D=true&q%5Bby_product_category_name%5D=レディース" class="text-red">SALE</a></li>
+          <li><a href="/shop/pages/aboutus">ABOUT US</a></li>
+        </ul>
+      </div>
+      <div class="nav-pc-men" style="display:{% if cookies['gender'] == 'men' %}{{ 'block' }}{% else %}{{ 'none' }}{% endif %};">
+        <ul class="nav-pc-main">
+          <li><a href="/shop/search?q%5Bvariants_is_new_eq%5D=true&q%5Bby_product_category_name%5D=メンズ">NEW</a></li>
+          <li><a href="javascript:void(0);">BRANDS</a>
+            <div>
+              <ul>
+                {% capture makers2 %}
+                  {% for maker in makers %}
+                    |{{ maker.name }}#{{ maker.id }}
+                  {% endfor %}
+                {% endcapture %}
+
+                {% assign sortedmakers = makers2 | split: '|' | sort %}
+
+                {% for maker in sortedmakers %}
+                  {% assign makeritems = maker | split: '#' %}
+
+                  {% if makeritems[0] != blank && makeritems[1] != blank %}
+                    <li><a href='/shop/makers/{{ makeritems[1] | strip }}?q%5Bby_product_category_name%5D=メンズ'>{{ makeritems[0] }}</a></li>
+                  {% endif %}
+                {% endfor %}
+              </ul>
+            </div>
+          </li>
+          {% for product_category in product_categories %}
+            {% assign ignore_product_categories = 'レディース メンズ' | split: ' ' %}
+            {% unless ignore_product_categories contains product_category.name %}
+              <li><a href="/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=メンズ">{{ product_category.name }}</a></li>
+            {% endunless %}
+          {% endfor %}
+          <li><a href="/shop/search?q%5Bvariants_is_sale_eq%5D=true&q%5Bby_product_category_name%5D=メンズ" class="text-red">SALE</a></li>
+          <li><a href="/shop/pages/aboutus">ABOUT US</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <!-- nav & header pc -->
+</header>

@@ -1,0 +1,18 @@
+{{ 'shop/base' | javascript_include_tag }} 
+
+{% content_for meta_description %}
+{{ page.meta_description }}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{{ page.meta_keywords }}
+{% endcontent_for %}
+
+{% content_for title %}
+{{ page.title }}｜mixtape
+{% endcontent_for %}
+
+{{ page.parsed_content }}
+
+
+

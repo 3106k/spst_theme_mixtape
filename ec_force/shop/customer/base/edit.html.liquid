@@ -1,0 +1,206 @@
+{{ 'shop/customer/base' | javascript_include_tag }}
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
+
+<div class="wrap">
+  <section id="customer-edit-view">
+    <form class="simple_form form-horizontal" novalidate="novalidate" id="new_customer" action="/shop/customer" accept-charset="UTF-8" method="post">
+      <input name="_method" type="hidden" value="put">
+      <div class="inner">
+        <h2 class="page-title">会員情報の編集</h2>
+        <div class="form-box">
+          <p class="text-center lh-2 mb-3">
+          「<span class="text-danger">*</span> 」印は入力必須項目です。
+          </p>              
+        
+          <div>
+            <!--<h3 class="page-sub-title">会員情報の編集</h3>-->
+            <fieldset>
+              <label>メールアドレス<span class="text-danger">*</span></label>
+              <div class="full">
+                <input class="validate[required,custom[email]]" value={{ current_customer.email }} placeholder="例）yamada@example.co.jp" type="text" name="customer[email]" id="customer_email" data-prompt-position="topLeft">
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>お名前<span class="text-danger">*</span></label>
+              {% if shop_form_settings['name_1_field'] %}
+              <div class="full">
+                <input class="validate[required]" placeholder="例）山田 花子" type="text" value="{{ current_customer.billing_address.full_name }}" name="customer[billing_address_attributes][name01]" id="customer_billing_address_attributes_name01" data-prompt-position="topLeft">               
+              </div>
+              {% else %}
+              <div class="short">
+                <input class="validate[required]" value="{{ current_customer.billing_address.name01 }}" maxlength="32" size="15" placeholder="例）山田" type="text" name="customer[billing_address_attributes][name01]" id="customer_billing_address_attributes_name01" data-prompt-position="topLeft">
+                <input class="validate[required]" value="{{ current_customer.billing_address.name02 }}" size="15" placeholder="例）花子" type="text" name="customer[billing_address_attributes][name02]" id="customer_billing_address_attributes_name02" data-prompt-position="topLeft">
+              </div>
+              {% endif %}
+            </fieldset>
+            <fieldset>
+              <label>フリガナ<span class="text-danger">*</span></label>
+              {% if shop_form_settings['kana_1_field'] %}
+              <div class="full">
+                <input class="validate[required,custom[katakana]]" placeholder="例）ヤマダ ハナコ" type="text" value="{{ current_customer.billing_address.full_kana }}" name="customer[billing_address_attributes][kana01]" id="customer_billing_address_attributes_kana01" data-prompt-position="topLeft">
+              </div>
+              {% else %}
+              <div class="short">
+                <input class="validate[required]" value="{{ current_customer.billing_address.kana01 }}" maxlength="32" size="15" placeholder="例）ヤマダ" type="text" name="customer[billing_address_attributes][kana01]" id="customer_billing_address_attributes_kana01" data-prompt-position="topLeft">
+                <input class="validate[required]" value="{{ current_customer.billing_address.kana02 }}" size="15" placeholder="例）ハナコ" type="text" name="customer[billing_address_attributes][kana02]" id="customer_billing_address_attributes_kana02" data-prompt-position="topLeft">
+              </div>
+              {% endif %}
+            </fieldset>
+            <fieldset>
+              <label>郵便番号<span class="text-danger">*</span></label>
+              {% if shop_form_settings['zip_1_field'] %}
+              <div class="full">
+                <input class="validate[required,custom[integer]]" placeholder="例）1234567" type="text" value="{{ current_customer.billing_address.full_zip }}" name="customer[billing_address_attributes][zip01]" id="customer_billing_address_attributes_zip01" data-prompt-position="topLeft">
+              </div>
+              {% else %}
+              <div class="short">
+                <input class="validate[required]" value="{{ current_customer.billing_address.zip01 }}" size="5" placeholder="例）100" type="text" name="customer[billing_address_attributes][zip01]" id="customer_billing_address_attributes_zip01" data-prompt-position="topLeft">
+                <span>-</span>
+                <input class="validate[required]" value="{{ current_customer.billing_address.zip02 }}" size="6" placeholder="例）0000" type="text" name="customer[billing_address_attributes][zip02]" id="customer_billing_address_attributes_zip02" data-prompt-position="topLeft">
+              </div>
+              {% endif %}
+            </fieldset>
+            <fieldset>
+              <label>都道府県<span class="text-danger">*</span></label>
+              <div class="full">
+                <select class="form-control input-sm validate[required]" name="customer[billing_address_attributes][prefecture_name]" id="customer_billing_address_attributes_prefecture_name" data-prompt-position="topLeft">
+                  <option value="">選択してください</option>
+                  {% for prefecture in prefectures %}
+                    {% if current_customer.billing_address.prefecture.name == prefecture.name %}
+                      <option value={{ prefecture.name }} selected>{{ prefecture.name }}</option>
+                    {% else %}
+                      <option value={{ prefecture.name }}>{{ prefecture.name }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>市郡区/町・村<span class="text-danger">*</span></label>
+              <div class="full">
+                <input class="validate[required] margin-bottom-5" value='{{ current_customer.billing_address.addr01 }}' placeholder="例）新宿区" size="50" type="text" name="customer[billing_address_attributes][addr01]" id="customer_billing_address_attributes_addr01" data-prompt-position="topLeft">
+                <p class="small">※番地が抜けていないかご確認ください。</p>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>丁目・番地・マンション名・号室<span class="text-danger">*</span></label>
+              <div class="full">
+                <input class="validate[required]" value='{{ current_customer.billing_address.addr02 }}' placeholder="例）西新宿マンション 204" size="50" type="text" name="customer[billing_address_attributes][addr02]" id="customer_billing_address_attributes_addr02" data-prompt-position="topLeft">
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>電話番号<span class="text-danger">*</span></label>
+              {% if shop_form_settings['tel_1_field'] %}
+              <div class="full">
+                <input class="validate[required,custom[integer]]" placeholder="例）0362775504" type="text" value="{{ current_customer.billing_address.full_tel }}" name="customer[billing_address_attributes][tel01]" id="customer_billing_address_attributes_tel01" data-prompt-position="topLeft">
+              </div>
+              {% else %}
+              <div class="phone">
+                <input class="validate[required]" value='{{ current_customer.billing_address.tel01 }}' placeholder="例）03" size="5" type="text" name="customer[billing_address_attributes][tel01]" id="customer_billing_address_attributes_tel01" data-prompt-position="topLeft">
+                <span>-</span>
+                <input class="validate[required]" value='{{ current_customer.billing_address.tel02 }}' placeholder="例）0000" size="5" type="text" name="customer[billing_address_attributes][tel02]" id="customer_billing_address_attributes_tel02" data-prompt-position="topLeft">
+                <span>-</span>
+                <input class="validate[required]" value='{{ current_customer.billing_address.tel03 }}' placeholder="例）0000" size="5" type="text" name="customer[billing_address_attributes][tel03]" id="customer_billing_address_attributes_tel03" data-prompt-position="topLeft">
+              </div>
+              {% endif %}
+            </fieldset>
+            <fieldset>
+              <label>FAX 番号</label>
+              {% if shop_form_settings['tel_1_field'] %}
+              <div class="full">
+                <input class="" placeholder="例）0362775504" type="text" value="{{ current_customer.billing_address.full_fax }}" name="customer[billing_address_attributes][fax01]" id="customer_billing_address_attributes_fax01" data-prompt-position="topLeft">
+              </div>
+              {% else %}
+              <div class="phone">
+                <input value='{{ current_customer.billing_address.fax01 }}' placeholder="例）03" size="5" type="text" name="customer[billing_address_attributes][fax01]" id="customer_billing_address_attributes_fax01" data-prompt-position="topLeft">
+                <span>-</span>
+                <input value='{{ current_customer.billing_address.fax02 }}' placeholder="例）0000" size="5" type="text" name="customer[billing_address_attributes][fax02]" id="customer_billing_address_attributes_fax02" data-prompt-position="topLeft">
+                <span>-</span>
+                <input value='{{ current_customer.billing_address.fax03 }}' placeholder="例）0000" size="5" type="text" name="customer[billing_address_attributes][fax03]" id="customer_billing_address_attributes_fax03" data-prompt-position="topLeft">
+              </div>
+              {% endif %}
+            </fieldset>
+            <fieldset>
+              <label>性別</label>
+              <div class="short">
+                <select name="customer[sex_id]" id="customer_sex_id">
+                  <option value="">選択してださい</option>
+                  <option value="1" {% if current_customer.sex.id == 1 %}selected{% endif %}>男性</option>
+                  <option value="2" {% if current_customer.sex.id == 2 %}selected{% endif %}>女性</option>
+                </select>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>職業</label>
+              <div class="full">
+                <select name="customer[job_id]" id="customer_job_id">
+                  <option value="">選択してださい</option>
+                  {% for job in jobs %}
+                    {% if current_customer.job.id == job.id %}
+                      <option value={{ job.id }} selected>{{ job.name }}
+                    {% else %}
+                      <option value={{ job.id }}>{{ job.name }}
+                    {% endif %}
+                  {% endfor %}
+                  </option>
+                </select>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>生年月日</label>
+              <div class="birth">
+              <div class="custom-select mr-2 mr-pc-4" style="width: 40%;">
+                  <select id="customer_birth_1i" name="customer[birth(1i)]" class="validate[condRequired[customer_birth_2i,customer_birth_3i]]" data-prompt-position="topLeft">
+                    {% if birth_year_default_value == 0 %}
+                      <option value="">年</option>
+                    {% endif %}
+                    {% assign now_year = "now" | date: "%Y" %}
+                    {% assign past_100_years = "now" | date: "%Y" | minus: 100 %}
+                    {% for y in (past_100_years..now_year) %}
+                      {% if birth_year_default_value == y %}
+                        {% if current_customer.birth_year == nil %}
+                          <option value="" selected="true">年</option>
+                        {% else %}
+                          <option value="">年</option>
+                        {% endif %}
+                      {% endif %}
+                      <option value='{{ y }}' {% if current_customer.birth_year == y %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="custom-select wpx-pc-140 mr-2 mr-pc-4" style="width: 30%;">
+                  <select id="customer_birth_2i" name="customer[birth(2i)]" class="validate[condRequired[customer_birth_1i,customer_birth_3i]]" data-prompt-position="topLeft">
+                    <option value="">月</option>
+                    {% for m in (1..12) %}
+                      <option value='{{ m }}' {% if current_customer.birth_month == m %}selected{% endif %}>{{ m }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="custom-select wpx-pc-140" style="width: 30%;">
+                  <select id="customer_birth_3i" name="customer[birth(3i)]" class="validate[condRequired[customer_birth_1i,customer_birth_2i]]" data-prompt-position="topLeft">
+                    <option value="">日</option>
+                    {% for d in (1..31) %}
+                      <option value='{{ d }}' {% if current_customer.birth_day == d %}selected{% endif %}>{{ d }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>当店からのお知らせメール<span class="must"> ※ </span></label>
+              <div>
+                <input type="radio" name="customer[optin]" class="radio" value=1 {% if current_customer.optin == true %}checked{% endif %}>
+                <span>受け取る</span>
+                <input type="radio" name="customer[optin]" class="radio" value=0 {% if current_customer.optin == false %}checked{% endif %}>
+                <span>受け取らない</span>
+              </div>
+            </fieldset>
+            <center><input type="submit" name="commit" value="保存する" class="btn btn-black"></center>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>

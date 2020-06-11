@@ -1,0 +1,45 @@
+{{ 'shop/contacts' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+お問い合わせ確認｜mixtape
+{% endcontent_for %}
+
+<div id="contacts-form-view" class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/shop">トップページ</a></li>
+      <li>お問い合わせ</li>
+    </ul>
+
+    <h1><span>Contact</span>お問い合わせ</h1>
+
+    <div class="form-box">
+      <dl class="orders-summary">
+        <dt>お問い合わせ種別</dt>
+        <dd>{{ contact.contact_types | map: 'name' | join: '' }}</dd>
+        <dt>メールアドレス</dt>
+        <dd>{{ contact.customer.email }}</dd>
+        <dt>お名前</dt>
+        <dd>{{ contact.address.full_name }}</dd>
+        <dt>お名前（カナ）</dt>
+        <dd>{{ contact.address.full_kana }}</dd>
+        <dt>電話番号</dt>
+        <dd>{{ contact.address.full_tel }}</dd>
+        <dt>お問い合わせ内容</dt>
+        <dd>{{ contact.content | escape }}</dd>
+      </dl>
+      <form action="/shop/contact/confirm" method="post">
+        <input name="_method" type="hidden" value="put">
+        {% csrf_meta_tags %}
+        <button class="btn purchase btn btn-black btn-block margin-bottom-20" type="submit">この内容で送信する</button>
+        <a class="d-block text-center mb-2" href="/shop/contact">入力内容を修正する</a>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<div class="wrap">
+  <!-- cart mobile & ipad -->
+  <section class="cart mobile ipad">
+    <div class="inner-float">
+      <h2 class="page-title cart-title">お買い物カート</h1>
+      {% if order.order_items.size == 0 %}
+        <p>カートの中には何も入っていません</p>
+      {% else %}
+        {% for order_item in order.order_items %}
+          <div class="cart-box">
+            <div class="float-box-inside">
+              <div class="cart-product-detail">
+                <div class="cart-col-3-7">
+                  <a href="/shop/products/{{ order_item.product.master.sku }}"><img src="{{ order_item.product.master.thumbnails[0].url_large }}" class="img-max"></a>
+                </div>
+                <div class="cart-col-7-3">
+                  <p class="bold margin-bottom-10">
+                    <a href="/shop/products/{{ order_item.product.master.sku }}">
+                      {{ order_item.product.name }}
+                      {% for option_value in order_item.variant.option_values %}
+                        / {{ option_value.name }}
+                      {% endfor %}
+                    </a>
+                  </p>
+                  <p class="big bold">{{ order_item.variant.sales_price | number_to_currency }}(税抜)</p>
+                </div>
+              </div>
+            </div>
+            <div class="float-box-inside">
+              <div class="cart-purchase-info">
+                <p>商品ID:{{ order_item.variant.sku }}</p>
+                {% if order_item.variant.product.option_types != empty %}
+                  {% for option_type in order_item.variant.product.option_types %}
+                    <p>{{ option_type.name }}: {{ order_item.variant.option_values_to_h[option_type.name] }}</p>
+                  {% endfor %}
+                {% endif %}
+                <span class="block">数量</span>
+                <form action="/shop/cart" method="post">
+                  <input name="_method" type="hidden" value="put">
+                  <input name="variant_id" type="hidden" value="{{ order_item.variant_id }}">
+                  <input type="number" name="quantity" class="margin-right-5" value="{{ order_item.quantity }}" size="4" maxlength="3" min=0>
+                  <span class="margin-right-10">個</span>
+                  <input type="submit" value="変更" name="QUANTITY" class="refresh">
+                </form>
+              </div>
+              <div class="cart-price-each">
+                <table>
+                  <tr>
+                    <td>小計</td>
+                    <td class="text-right">{{ order_item.price | times: order_item.quantity | number_to_currency }}</td>
+                  </tr>
+                  <tr class="text-right">
+                    <td colspan=2>(送料込み)</td>
+                  </tr>
+                  <tr class="text-right">
+                    <td colspan=2>
+                      <input type="submit" value="x 削除" onclick="location.href='/shop/cart/delete?variant_id={{ order_item.variant_id }}';" class="delete">
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        <div class="float-box-inside">
+          <p class="text-right bold big margin-bottom-30">{{ order.subtotal | number_to_currency }}(税抜)</p>
+          <a href="/shop/order/new" class="btn btn-black btn-block margin-bottom-10">購入手続きへ</a>
+          <a href="/shop" class="btn btn-black-reverse btn-block">買い物を続ける</a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  <!-- cart mobile & ipad -->
+  <!-- cart pc -->
+  <section class="cart pc">
+    <div class="inner">
+      <h2 class="page-title cart-title">お買い物カート</h1>
+      {% if order.order_items.size == 0 %}
+        <p>カートの中には何も入っていません</p>
+      {% else %}
+        <table class="table-cart bottom-space-big">
+          <tr class="line">
+            <th>商品名</th>
+            <th>価格(税抜)</th>
+            <th colspan=2>数量</th>
+          </tr>
+          {% for order_item in order.order_items %}
+            <tr>
+              <td>
+                <a href="/shop/products/{{ order_item.product.master.sku }}">
+                  {{ order_item.product.name }}
+                  {% for option_value in order_item.variant.option_values %}
+                    / {{ option_value.name }}
+                  {% endfor %}
+                </a>
+              </td>
+              <td>{{ order_item.variant.sales_price | number_to_currency }}</td>
+              <td>
+                <form action="/shop/cart" method="post" class="float-left">
+                  <input name="_method" type="hidden" value="put">
+                  <input name="variant_id" type="hidden" value="{{ order_item.variant_id }}">
+                  <input type="number" name="quantity" class="margin-right-5" value="{{ order_item.quantity }}" size="4" maxlength="3" min=0>
+                  <span class="margin-right-10">個</span>
+                  <input type="submit" value="変更" name="QUANTITY" class="refresh">
+                </form>
+                <input type="submit" value="x 削除" onclick="location.href='/shop/cart/delete?variant_id={{ order_item.variant_id }}';" class="delete">
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+        <div class="text-center">
+          <p class="big bottom-space-big">合計 {{ order.subtotal | number_to_currency }}(税抜)</p>
+          <a href="/shop" class="btn btn-black-reverse">買い物を続ける</a>
+          <a href="/shop/order/new" class="btn btn-black">購入手続きへ</a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+  <!-- cart pc -->
+</div>
+<script>
+  $('.delete').on('click', function() {
+    $(this).parents('.cart-box').fadeOut();
+  });
+</script>

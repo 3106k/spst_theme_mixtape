@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <!-- ショップ共通タグ (header 要素の最初に追加) -->
+    {{ 'header_prepend' | shop_shared_tag }}
+
+    <!-- ショップページタグ (header 要素の最初に追加) -->
+    {{ 'header_prepend' | shop_page_tag }}
+
+    <!-- headタグ内に記述するコードのためのパーシャル -->
+    <!-- metaタグや外部CSS/JSの読み込み等で使用する -->
+    {% include 'ec_force/shop/shared/header.html' %}
+
+    <!-- ショップ共通タグ (header 要素の最後に追加) -->
+    {{ 'header_append' | shop_shared_tag }}
+
+    <!-- ショップページタグ (header 要素の最後に追加) -->
+    {{ 'header_append' | shop_page_tag }}
+    
+  </head>
+  <body>
+    <!-- ショップ共通タグ (body 要素の最初に追加) -->
+    {{ 'body_prepend' | shop_shared_tag }}
+
+    <!-- ショップページタグ (body 要素の最初に追加) -->
+    {{ 'body_prepend' | shop_page_tag }}
+
+    {% if customer_signed_in %}
+    <input type="hidden" id="customer-email" value="{{ current_customer.email }}">
+    <input type="hidden" id="customer-number" value="{{ current_customer.number }}">
+    {% endif %}
+
+    {{ include_gon }}
+
+    {% include 'ec_force/shop/shared/nav.html' %}
+    {{ content_for_layout }}
+    {% include 'ec_force/shop/shared/footer.html' %}
+
+    <!-- ショップ共通タグ (body 要素の最後に追加) -->
+    {{ 'body_append' | shop_shared_tag }}
+
+    <!-- ショップページタグ (body 要素の最後に追加) -->
+    {{ 'body_append' | shop_page_tag }}
+
+    <script src="{{ file_root_path }}/js/common.js"></script>
+    <script src="{{ file_root_path }}/js/slider.js"></script>
+    <script src="{{ file_root_path }}/js/slick.min.js"></script>
+    <script src="{{ file_root_path }}/js/heightLine.js"></script>
+    <script src="{{ file_root_path }}/js/jquery.cookie.js"></script>  
+    
+  </body>
+</html>

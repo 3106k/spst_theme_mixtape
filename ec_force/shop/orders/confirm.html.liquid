@@ -1,0 +1,242 @@
+{{ 'shop/orders' | javascript_include_tag }}
+
+{% content_for meta_description %}
+【公式オンラインショップ】| 
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+カート | 
+{% endcontent_for %}
+
+<script src="{{ file_root_path }}/js/jquery.placeholder.label.js"></script>
+<script src="{{ file_root_path }}/js/jquery.validate.min.js"></script>
+<script src="{{ file_root_path }}/js/messages_ja.js" charset="UTF-8"></script>
+<script src="{{ file_root_path }}/js/placeholder.js"></script>
+<link rel="stylesheet" href="{{ file_root_path }}/css/placeholder.css" type="text/css">
+
+<style>
+ header.header {
+   display: none;
+ }
+ header.header.orders {
+   display: block;
+   position: inherit;
+ }
+ header.header .header-inner-mobile {
+   display: none;
+ }
+ footer .footer-inner {
+   display: none;
+ }
+</style>
+
+<header class="header orders">
+  <a href="/"><img src="https://ec-force.s3.amazonaws.com/mixtapetokyo/uploads/img/mixtape_logo_Black.png" alt="mixtape" class="logo-pc"></a>
+</header>
+
+<div class="wrap orders">
+  <!-- cart -->
+  <section class="cart">
+    <div class="inner">
+      <h2 class="h2 mb-2">CHECKOUT</h2>
+
+      <ul class="purchase_step d-flex justify-content-center fs-14 mb-pc-5 mb-3">
+        <!--
+        <li class="done">
+          <i class="fas fa-circle"></i> <span>新規会員登録</span>
+        </li>
+        -->
+        <li class="done">
+          <i class="fas fa-circle"></i> <span>注文情報入力</span>
+        </li>
+        <li class="active">
+          <i class="fad fa-circle"></i> <span>注文情報確認</span>
+        </li>
+        <li>
+          <i class="fal fa-circle"></i> <span>注文完了</span>
+        </li>
+      </ul>
+
+      <form action="/shop/order/confirm" method="post">      
+        <div class="form-outer d-flex row-reverse justify-content-between align-items-baseline">
+          <div class="bottom-space-big orders_detail">
+            <center>
+              <input type="submit" class="purchase btn btn-black btn-block margin-bottom-20 d-block" value="この内容で注文する">
+            </center>
+            <table class="table-cart mb-0">
+              <tr>
+                <th>商品名</th>
+                <th>価格(税抜)</th>
+                <th>数量</th>
+                <th>小計</th>
+              </tr>
+              {% for order_item in order.order_items %}<tr>
+                <td>
+                  <a href="/shop/products/{{ order_item.product.master.sku }}">
+                    {{ order_item.product.name }}
+                  </a><br />
+                  <span class="small">{% for option_value in order_item.variant.option_values %}
+                    / {{ option_value.name }}
+                  {% endfor %}</span>
+                  
+                </td>
+                <td class="text-right">{{ order_item.variant.sales_price | number_to_currency }}</td>
+                <td class="text-center">{{ order_item.quantity }}</td>
+                <td class="text-right">{{ order_item.price | times: order_item.quantity | number_to_currency: format: '%n %u' }}</td>
+              </tr>
+              {% endfor %}
+            </table>
+
+            <div class="cart-confirm-summary mb-pc-3 mb-1">
+              <dl>
+                <dt>ポイント利用</dt>
+                <dd>{% if order.discount_point_amount != 0 and order.use_point_include_tax? == true %}
+                  {{ order.discount_point_amount | number_to_currency: format: '%n' }}
+                {% endif %}{% if order.discount_point_amount != 0 and order.use_point_include_tax? == false %}
+                  {{ order.discount_point_amount | number_to_currency: format: '%n' }}
+                {% else %}
+                  -
+                {% endif %}</dd>
+                <dt>割引</dt>
+                <dd>{{ order.discount | number_to_currency: format: '%n %u' }}</dd>
+                <dt>ラッピング</dt>
+                <dd>{{ order.misc_fee | number_to_currency: format: '%n %u' }}</dd>
+                <dt>送料</dt>
+                <dd>{{ order.deliv_fee | number_to_currency: format: '%n %u' }}</dd>
+                <dt>手数料</dt>
+                <dd>{{ order.charge | number_to_currency: format: '%n %u' }}</dd>
+                <dt>消費税</dt>
+                <dd>{{ order.tax | number_to_currency: format: '%n %u' }}</dd>
+              </dl>
+            </div>
+            <p class="cart-subtotal mb-5">合計 {{ order.total | number_to_currency: format: '%n %u' }}</p>
+
+            <div class="order-confirm-tax mb-8 mb-pc-22">
+              <div class="d-flex lh-2 mx-pc-n2" >
+                <div class="w-50 px-pc-2" style="padding: 0 3px;">
+                  <dl>
+                    <dt>10%対象</dt>
+                    <dd>
+                      <p>小計<span>{% if order.subtotal10 != 0 %} {{ order.subtotal10 | number_to_currency: format: '%n %u' }} {% endif %}</span></p>
+                      <p>割引<span>{% if order.discount10 != 0 %} - {{ order.discount10 | number_to_currency: format: '%n %u' }}{% else %} 0 {% endif %}</span></p>
+                      <p>消費税<span>{% if order.tax10 != 0 %} {{ order.tax10 | number_to_currency: format: '%n %u' }} {% endif %}</span></p>
+                    </dd>
+                  </dl>
+                </div>
+                <div class="w-50 px-pc-2" style="padding: 0 3px;">
+                  <dl>
+                    <dt>8%対象</dt>
+                    <dd>
+                      <p>小計<span>{% if order.subtotal8 != 0 %} {{ order.subtotal8 | number_to_currency: format: '%n %u' }}{% else %} 0  {% endif %}</span></p>
+                      <p>割引<span>{% if order.discount8 != 0 %} - {{ order.discount8 | number_to_currency: format: '%n %u' }}{% else %} 0  {% endif %}</span></p>
+                      <p>消費税<span>{% if order.tax8 != 0 %} {{ order.tax8 | number_to_currency: format: '%n %u' }} {% else %} 0 {% endif %}</span></p>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+              <p class="mt-2 fs-12 lh-2">
+                「*」は軽減税率対象商品です。<br />
+                【配送先が沖縄・離島の場合】<br>
+                配送先が沖縄・離島の場合、宅配便送料無料商品でも別途送料1,870円をいただいております。<br />
+                ご注文時の送料には反映されませんので、後ほど当店にて送料を1,870円に修正しメールにてご連絡いたします。<br />
+                何卒ご了承下さいますようお願い申し上げます。
+              </p>
+            </div>
+            
+          </div>
+          
+
+          <div class="form-box">
+            <!-- form -->
+            <div id='confirm-view'>
+              
+              <h3 class="h6 fw-700 mb-2">購入者情報</h3>
+              <dl class="orders-summary">
+                <dt>お名前</dt>
+                <dd>{{ order.billing_address.full_name }}</dd>
+                <dt>フリガナ</dt>
+                <dd>{{ order.billing_address.full_kana }}</dd>
+                <dt>住所</dt>
+                <dd>〒{{ order.billing_address.full_zip}} {{ order.billing_address.full_address }}</dd>
+                <dt>電話番号</dt>
+                <dd>{{ order.billing_address.full_tel }}</dd>
+                <dt>メールアドレス</dt>
+                <dd>{{ order.email }}</dd>
+              </dl>
+              
+              <h3 class="h6 fw-700 mb-2">お届け先情報</h3>
+              <dl class="orders-summary">
+                <dt>お名前</dt>
+                <dd>{{ order.shipping_address.full_name }}</dd>
+                <dt>フリガナ</dt>
+                <dd>{{ order.shipping_address.full_kana }}</dd>
+                <dt>住所</dt>
+                <dd>〒{{ order.shipping_address.full_zip}} {{ order.shipping_address.full_address }}</dd>
+                <dt>電話番号</dt>
+                <dd>{{ order.shipping_address.full_tel }}</dd>
+                <dt>メールアドレス</dt>
+                <dd>{{ order.email }}</dd>
+              </dl>
+              
+              <h3 class="h6 fw-700 mb-2">お支払い方法</h3>
+              <dl class="orders-summary">
+                <dt>お支払い方法</dt>
+                <dd>{{ order.payment.payment_method.name }}</dd>
+                {% if order.payment.payment_method.one_time_payment? %}
+                  <dt>カード番号</dt>
+                  <dd>{{ order.payment.source.display_number }}</dd>
+                  <dt>カード有効期限</dt>
+                  <dd>{{ order.payment.source.month }} / {{ order.payment.source.year }}</dd>
+                  <dt>カード名義</dt>
+                  <dd>{{ order.payment.source.name }}</dd>
+                {% elsif order.payment.payment_method.installment_payment? %}
+                  <dt>お支払い回数</dt>
+                  <dd>{{ order.payment.payment_times }}</dd>
+                  <dt>カード番号</dt>
+                  <dd>{{ order.payment.source.display_number }}</dd>
+                  <dt>カード有効期限</dt>
+                  <dd>{{ order.payment.source.month }} / {{ order.payment.source.year }}</dd>
+                  <dt>カード名義</dt>
+                  <dd>{{ order.payment.source.name }}</dd>
+                {% elsif order.payment.payment_method.revolving_payment? %}
+                  <dt>カード番号</dt>
+                  <dd>{{ order.payment.source.display_number }}</dd>
+                  <dt>カード有効期限</dt>
+                  <dd>{{ order.payment.source.month }} / {{ order.payment.source.year }}</dd>
+                  <dt>カード名義</dt>
+                  <dd>{{ order.payment.source.name }}</dd>
+                {% endif %}
+              </dl>
+              
+              <h3 class="h6 fw-700 mb-2">お届け日</h3>
+              <dl class="orders-summary">
+                <dt>お届け日</dt>
+                <dd>{{ order.scheduled_to_be_delivered_at | date: '%Y-%m-%d' }} {{ order.scheduled_delivery_time }}</dd>
+                {% if order.subs_order %}
+                  <dt>２回目お届け日</dt>
+                  <dd>{{ order.subs_order.scheduled_to_be_delivered_at | date: '%Y-%m-%d' }}</dd>
+                {% endif %}
+              </dl>
+              
+              <h3 class="h6 fw-700 mb-2">通信欄</h3>
+              <dl class="orders-summary">
+                <dt>通信欄</dt>
+                <dd><textarea name="order[remark]" rows="5" style="width:100%;" placeholder="・代引きをご利用のお客様&#13;&#10;日付指定をお受付致しかねます。ご注意ください。&#13;&#10;&#13;&#10;・領収書をご希望のお客様&#13;&#10;通信欄に「領収書希望」とご明記下さい。&#13;&#10;&#13;&#10;・納品書の価格非表記をご希望のお客様&#13;&#10;通信欄に「納品書に価格を表記しない」とご明記下さい。"></textarea>
+                </dd>
+              </dl>
+              <input name="_method" type="hidden" value="put">
+              <center><input type="submit" value="この内容で注文する" class="btn btn-black margin-bottom-20"></center>
+              <center><a href="/shop/order/new" class="margin-bottom-10 block">戻る</a></center>
+              
+              <p class="small">当サイトはSSL暗号化通信に対応しております。ご注文内容やクレジットカード番号など、お客様の大切な情報は暗号化して送信されます。第三者から解読できないようになっております。</p>
+            </div>
+            <!-- form -->
+          </div>
+        </div>
+      </form>        
+    </div>
+  </section>
+</div>

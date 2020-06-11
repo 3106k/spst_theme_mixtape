@@ -1,0 +1,14 @@
+
+<div class="bottom-space-big">
+  {% if shop_form_settings['optin'] %}
+  <div class="custom-checkbox mb-3">
+    <input name="order[customer_attributes][optin]" type="hidden" value="0">
+    <input {% if order.customer %}{% if order.customer.optin %}checked="checked"{% endif %}{% else %}{% if shop_form_settings['optin_default'] %}checked="checked"{% endif %}{% endif %} id="optin" name="order[customer_attributes][optin]" type="checkbox" class="custom-checkbox-input">
+    <label class="custom-checkbox-label fs-13 lh-2 lh-pc-normal fs-pc-14" for="optin">メールマガジンを希望する</label>
+  </div>
+  {% endif %}
+  <div class="custom-checkbox">
+    <input type="checkbox" name="agree" id="terms" class="custom-checkbox-input validate[required]" checked="checked" />
+    <label class="custom-checkbox-label fs-13 lh-2 lh-pc-4 fs-pc-14" for="terms">「<a href="/shop/customer_term" class="text-red">利用規約</a>」に同意して申込みます。未成年者については法定代理人の同意を得ていることを確認します。</label>
+  </div>
+</div>

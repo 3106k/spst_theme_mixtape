@@ -1,0 +1,344 @@
+{% if customer_signed_in %}
+  <div id='view-billing-information' class="bottom-space-big">
+    <h3 class="h6 fw-700 mb-2">ご登録情報</h3>
+    <!-- お名前 -->
+    <div class='hide-on-amazon-pay'>
+      <dl class="orders-summary">
+        <dt>お名前</dt>
+        <dd>{% if shop_form_settings['name_1_field'] %}{% if order.billing_address %}{{ order.billing_address.full_name }}{% else %}{{ order.customer.billing_address.full_name }}{% endif %} {% else %}{% if order.billing_address %}{{ order.billing_address.name01 }}{% else %}{{ order.customer.billing_address.name01 }}{% endif %} {% if order.billing_address %}{{ order.billing_address.name02 }}{% else %}{{ order.customer.billing_address.name02 }}{% endif %}{% endif %}</dd>
+        <dt>フリガナ</dt>
+        <dd>{% if shop_form_settings['kana_1_field'] %}{% if order.billing_address %}{{ order.billing_address.full_kana }}{% else %}{{ order.customer.billing_address.full_kana }}{% endif %}{% else %}{% if order.billing_address %}{{ order.billing_address.kana01 }}{% else %}{{ order.customer.billing_address.kana01 }}{% endif %} {% if order.billing_address %}{{ order.billing_address.kana02 }}{% else %}{{ order.customer.billing_address.kana02 }}{% endif %}{% endif %}</dd>
+        <dt>住所</dt>
+        <dd>〒{% if shop_form_settings['zip_1_field'] %}{% if order.billing_address %}{{ order.billing_address.full_zip }}{% else %}{{ order.customer.billing_address.full_zip }}{% endif %}{% else %}{% if order.billing_address %}{{ order.billing_address.zip01 }}{% else %}{{ order.customer.billing_address.zip01 }}{% endif %}-{% if order.billing_address %}{{ order.billing_address.zip02 }}{% else %}{{ order.customer.billing_address.zip02 }}{% endif %} {% if order.billing_address %}{{ order.billing_address.addr01 }}{% else %}{{ order.customer.billing_address.addr01 }}{% endif %}{% if shop_form_settings['addr03'] %} {% if order.billing_address %}{{ order.billing_address.addr02 }}{% elsif order.customer.billing_address %}{{ order.customer.billing_address.addr02 }}{% endif %}{% if order.billing_address %}{{ order.billing_address.addr03 }}{% else %}{{ order.customer.billing_address.addr03 }}{% endif %}{% else %}{% if order.billing_address %}{{ order.billing_address.addr02 }}{{ order.billing_address.addr03 }}{% elsif order.customer.billing_address %}{{ order.customer.billing_address.addr02 }}{{ order.customer.billing_address.addr03 }}{% endif %}{% endif %}{% endif %}
+          </dd>
+        <dt>電話番号</dt>
+        <dd>{% if shop_form_settings['tel_1_field'] %}{% if order.billing_address %}{{ order.billing_address.full_tel }}{% else %}{{ order.customer.billing_address.full_tel }}{% endif %}{% else %}{% if order.billing_address %}{{ order.billing_address.tel01 }}{% else %}{{ order.customer.billing_address.tel01 }}{% endif %}-{% if order.billing_address %}{{ order.billing_address.tel02 }}{% else %}{{ order.customer.billing_address.tel02 }}{% endif %}-{% if order.billing_address %}{{ order.billing_address.tel03 }}{% else %}{{ order.customer.billing_address.tel03 }}{% endif %}{% endif %}</dd>
+        <dt>メールアドレス</dt>
+        <dd>{{ current_customer.email }}</dd>
+      </dl>
+    </div>
+  </div>
+
+  {% if shop_form_settings['name_1_field'] %}
+    <input type="hidden" class='form-control md validate[required]' id='order_billing_address_attributes_name01' name='order[billing_address_attributes][name01]' value="{% if order.billing_address %}{{ order.billing_address.full_name }}{% else %}{{ order.customer.billing_address.full_name }}{% endif %}" placeholder="例：山田 太郎">
+  {% else %}
+    <input type="hidden" class='form-control md validate[required]' id='order_billing_address_attributes_name01' name='order[billing_address_attributes][name01]' value="{% if order.billing_address %}{{ order.billing_address.name01 }}{% else %}{{ order.customer.billing_address.name01 }}{% endif %}" placeholder="例：山田">
+    <input type="hidden" class='form-control md validate[required]' id='order_billing_address_attributes_name02' name='order[billing_address_attributes][name02]' value="{% if order.billing_address %}{{ order.billing_address.name02 }}{% else %}{{ order.customer.billing_address.name02 }}{% endif %}" placeholder="例：太郎" >
+  {% endif %}
+
+  {% if shop_form_settings['kana_1_field'] %}
+    <input type="hidden" class='form-control md validate[required,custom[katakana]]' id='order_billing_address_attributes_kana01' name='order[billing_address_attributes][kana01]' value='{% if order.billing_address %}{{ order.billing_address.full_kana }}{% else %}{{ order.customer.billing_address.full_kana }}{% endif %}' placeholder="例：ヤマダ タロウ">
+  {% else %}
+    <input type="hidden" class='form-control md validate[required,custom[katakana]]' id='order_billing_address_attributes_kana01' name='order[billing_address_attributes][kana01]' value='{% if order.billing_address %}{{ order.billing_address.kana01 }}{% else %}{{ order.customer.billing_address.kana01 }}{% endif %}' placeholder="例：ヤマダ">
+    <input type="hidden" class='form-control md validate[required,custom[katakana]]' id='order_billing_address_attributes_kana02' name='order[billing_address_attributes][kana02]' value='{% if order.billing_address %}{{ order.billing_address.kana02 }}{% else %}{{ order.customer.billing_address.kana02 }}{% endif %}' placeholder="例：タロウ">
+  {% endif %}
+
+  {% if shop_form_settings["sex"] %}
+    <input type="hidden" name="order[customer_attributes][sex_id]" value="{{order.customer.sex.id}}" />
+  {% endif %}
+
+  {% if shop_form_settings["birth"] %}
+    <input type="hidden" name="order[customer_attributes][birth(1i)]" value="{{order.customer.birth_year}}" />
+    <input type="hidden" name="order[customer_attributes][birth(2i)]" value="{{order.customer.birth_month}}" />
+    <input type="hidden" name="order[customer_attributes][birth(3i)]" value="{{order.customer.birth_day}}" />
+  {% endif %}
+
+  {% if shop_form_settings['zip_1_field'] %}
+    <input type="hidden" class='form-control md validate[required,custom[integer]]' id='order_billing_address_attributes_zip01' maxlength='7' name='order[billing_address_attributes][zip01]' value='{% if order.billing_address %}{{ order.billing_address.full_zip }}{% else %}{{ order.customer.billing_address.full_zip }}{% endif %}' placeholder="例 : 1234567">
+  {% else %}
+    <input type="hidden" class='form-control md js-trigger-perfecture validate[required,custom[integer]]' id='order_billing_address_attributes_zip01' maxlength='5' name='order[billing_address_attributes][zip01]' value='{% if order.billing_address %}{{ order.billing_address.zip01 }}{% else %}{{ order.customer.billing_address.zip01 }}{% endif %}' placeholder="例 : 123">
+    <input type="hidden" class='form-control md js-trigger-perfecture validate[required,custom[integer]]' id='order_billing_address_attributes_zip02' maxlength='4' name='order[billing_address_attributes][zip02]' value='{% if order.billing_address %}{{ order.billing_address.zip02 }}{% else %}{{ order.customer.billing_address.zip02 }}{% endif %}' placeholder="例 : 4567" >
+  {% endif %}
+
+  {% if order.customer.billing_address.prefecture_id %}
+    <input type="hidden" name="order[billing_address_attributes][prefecture_id]" value="{{ order.customer.billing_address.prefecture_id }}" />
+  {% else %}
+    <input type="hidden" name="order[billing_address_attributes][prefecture_id]" value="{{ order.billing_address.prefecture_id }}" />
+  {% endif %}
+
+  <input type="hidden" class='form-control md mb-3 validate[required]' id='order_billing_address_attributes_addr01' name='order[billing_address_attributes][addr01]' value='{% if order.billing_address %}{{ order.billing_address.addr01 }}{% else %}{{ order.customer.billing_address.addr01 }}{% endif %}' placeholder="{{ shop_form_settings['addr01_placeholder'] }}" placeholder="{{ shop_form_settings['addr01_placeholder'] }}">
+
+  {% if shop_form_settings['addr03'] %}
+    <input type="hidden" class='form-control md mb-3 {% if shop_form_settings["addr02_require"] %}validate[required]{% endif %}' id='order_billing_address_attributes_addr02' name='order[billing_address_attributes][addr02]' value='{% if order.billing_address %}{{ order.billing_address.addr02 }}{% elsif order.customer.billing_address %}{{ order.customer.billing_address.addr02 }}{% endif %}' placeholder="{{ shop_form_settings['addr02_placeholder'] }}">
+    <input type="hidden" class="form-control md" id='order_billing_address_attributes_addr03' name='order[billing_address_attributes][addr03]' value='{% if order.billing_address %}{{ order.billing_address.addr03 }}{% else %}{{ order.customer.billing_address.addr03 }}{% endif %}' placeholder="{{ shop_form_settings['addr03_placeholder'] }}">
+  {% else %}
+    <input type="hidden" class='form-control md {% if shop_form_settings["addr02_require"] %}validate[required]{% endif %}' id='order_billing_address_attributes_addr02' name='order[billing_address_attributes][addr02]' placeholder="{{ shop_form_settings['addr02_placeholder'] }}" value='{% if order.billing_address %}{{ order.billing_address.addr02 }}{{ order.billing_address.addr03 }}{% elsif order.customer.billing_address %}{{ order.customer.billing_address.addr02 }}{{ order.customer.billing_address.addr03 }}{% endif %}'>
+  {% endif %}
+
+  {% if shop_form_settings['tel_1_field'] %}
+    <input type="hidden" class='form-control md validate[required,custom[integer]]' maxlength='12' name='order[billing_address_attributes][tel01]' value='{% if order.billing_address %}{{ order.billing_address.full_tel }}{% else %}{{ order.customer.billing_address.full_tel }}{% endif %}' placeholder="例：09012345678" >
+  {% else %}
+    <input type="hidden" class='form-control md validate[required,custom[integer]]' maxlength='4' name='order[billing_address_attributes][tel01]' value='{% if order.billing_address %}{{ order.billing_address.tel01 }}{% else %}{{ order.customer.billing_address.tel01 }}{% endif %}' placeholder="例：090">
+    <input type="hidden" class='form-control md validate[required,custom[integer]]' maxlength='4' name='order[billing_address_attributes][tel02]' value='{% if order.billing_address %}{{ order.billing_address.tel02 }}{% else %}{{ order.customer.billing_address.tel02 }}{% endif %}' placeholder="例：1234">
+    <input type="hidden" class='form-control md validate[required,custom[integer]]' maxlength='4' name='order[billing_address_attributes][tel03]' value='{% if order.billing_address %}{{ order.billing_address.tel03 }}{% else %}{{ order.customer.billing_address.tel03 }}{% endif %}' placeholder="例：5678">
+  {% endif %}
+
+  <input type="hidden" id="email" class="form-control md" value="{{ current_customer.email }}" disabled />
+  <input name='order[email]' type='hidden' value='{{ current_customer.email }}'>
+  <input name='order[customer_attributes][email]' type='hidden' value='{{ current_customer.email }}' >
+  
+  
+{% else %}
+
+  <div id='view-billing-information' class="bottom-space-big">
+
+    <!-- お名前 -->
+    <div class='hide-on-amazon-pay'>
+      <fieldset>
+        <label>お名前 <span class="text-danger">※</span></label>
+        {% if shop_form_settings['name_1_field'] %}
+          <div class="full">
+            <input type="text" class='form-control validate[required]' id='order_billing_address_attributes_name01' name='order[billing_address_attributes][name01]' value="{% if order.billing_address %}{{ order.billing_address.full_name }}{% else %}{{ order.customer.billing_address.full_name }}{% endif %}" placeholder="例）山田 花子">
+          </div>
+        {% else %}
+          <div class="short">
+            <input type="text" class='form-control w-50 validate[required]' id='order_billing_address_attributes_name01' name='order[billing_address_attributes][name01]' value="{% if order.billing_address %}{{ order.billing_address.name01 }}{% else %}{{ order.customer.billing_address.name01 }}{% endif %}" placeholder="例）山田">
+            <input type="text" class='form-control w-50 validate[required]' id='order_billing_address_attributes_name02' name='order[billing_address_attributes][name02]' value="{% if order.billing_address %}{{ order.billing_address.name02 }}{% else %}{{ order.customer.billing_address.name02 }}{% endif %}" placeholder="例）花子">
+          </div>
+        {% endif %}
+
+      </fieldset>
+    </div>
+    <!-- フリガナ -->
+    <div class='hide-on-amazon-pay'>
+      <fieldset>
+        <label>フリガナ <span class="text-danger">※</span></label>
+        {% if shop_form_settings['kana_1_field'] %}
+          <div class="full">
+            <input type="text" class='form-control validate[required,custom[katakana]]' id='order_billing_address_attributes_kana01' name='order[billing_address_attributes][kana01]' value='{% if order.billing_address %}{{ order.billing_address.full_kana }}{% else %}{{ order.customer.billing_address.full_kana }}{% endif %}' placeholder="例）ヤマダ ハナコ">
+          </div>
+        {% else %}
+          <div class="short">
+            <input type="text" class='form-control w-50 validate[required,custom[katakana]]' id='order_billing_address_attributes_kana01' name='order[billing_address_attributes][kana01]' value='{% if order.billing_address %}{{ order.billing_address.kana01 }}{% else %}{{ order.customer.billing_address.kana01 }}{% endif %}' placeholder="例）ヤマダ">
+            <input type="text" class='form-control w-50 validate[required,custom[katakana]]' id='order_billing_address_attributes_kana02' name='order[billing_address_attributes][kana02]' value='{% if order.billing_address %}{{ order.billing_address.kana02 }}{% else %}{{ order.customer.billing_address.kana02 }}{% endif %}' placeholder="例）ハナコ">
+          </div>
+        {% endif %}
+      </fieldset>
+    </div>
+
+    <!-- 郵便番号 -->
+    <div class='hide-on-amazon-pay'>
+      <fieldset>
+        <label>郵便番号 <span class="text-danger">※</span></label>
+        <div class="postcode">
+          {% if shop_form_settings['zip_1_field'] %}
+            <span>〒</span>
+            <input type="text" class='validate[required,custom[integer]]' id='order_billing_address_attributes_zip01' maxlength='7' name='order[billing_address_attributes][zip01]' value='{% if order.billing_address %}{{ order.billing_address.full_zip }}{% else %}{{ order.customer.billing_address.full_zip }}{% endif %}' placeholder="例）1234567">
+          {% else %}
+            <span>〒</span>
+            <input type="text" class='validate[required,custom[integer]]' id='order_billing_address_attributes_zip01' maxlength='5' name='order[billing_address_attributes][zip01]' value='{% if order.billing_address %}{{ order.billing_address.zip01 }}{% else %}{{ order.customer.billing_address.zip01 }}{% endif %}' placeholder="例）123">
+            <span>−</span>
+            <input type="text" class='validate[required,custom[integer]]' id='order_billing_address_attributes_zip02' maxlength='4' name='order[billing_address_attributes][zip02]' value='{% if order.billing_address %}{{ order.billing_address.zip02 }}{% else %}{{ order.customer.billing_address.zip02 }}{% endif %}' placeholder="例）4567">
+          {% endif %}
+        </div>
+        <p class="small" style="margin-top: 5px; margin-left: 5px;">半角数字7ケタ、ハイフンなしで入力してください。</p>
+      </fieldset>
+    </div>
+
+    <!-- 都道府県 -->
+    <div class='hide-on-amazon-pay'>
+      <fieldset>
+        <label>都道府県 <span class="text-danger">※</span></label>
+        <div class="full">
+          <select class='validate[required]' id='order_billing_address_attributes_prefecture_name' name='order[billing_address_attributes][prefecture_id]'>
+            <option value="">選択してください</option>
+            {% for prefecture in prefectures %}
+              {% if order.billing_address %}
+                <option value='{{ prefecture.id }}' {% if prefecture.id == order.billing_address.prefecture_id %}selected{% endif %}>{{ prefecture.name }}</option>
+              {% elsif order.customer.billing_address %}
+                <option value='{{ prefecture.id }}' {% if prefecture.id == order.customer.billing_address.prefecture_id %}selected{% endif %}>{{ prefecture.name }}</option>
+              {% else %}
+                <option value='{{ prefecture.id }}'>{{ prefecture.name }}</option>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- 住所1 -->
+    <div class='hide-on-amazon-pay'>
+      <fieldset>
+        <label>{{ shop_form_settings['addr01_label'] }}</label>
+        <div class="full">
+          <input type="text" class='validate[required]' id='order_billing_address_attributes_addr01' name='order[billing_address_attributes][addr01]' value='{% if order.billing_address %}{{ order.billing_address.addr01 }}{% else %}{{ order.customer.billing_address.addr01 }}{% endif %}' placeholder="{{ shop_form_settings['addr01_placeholder'] }}" />
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- 住所2 -->
+    <div class='hide-on-amazon-pay'>
+      <fieldset>
+        <label>{{ shop_form_settings['addr02_label'] }}</label>
+        <div class="full">
+          {% if shop_form_settings['addr03'] %}
+            <input type="text" class='{% if shop_form_settings["addr02_require"] %}validate[required]{% endif %}' id='order_billing_address_attributes_addr02' name='order[billing_address_attributes][addr02]' value='{% if order.billing_address %}{{ order.billing_address.addr02 }}{% elsif order.customer.billing_address %}{{ order.customer.billing_address.addr02 }}{% endif %}' placeholder="{{ shop_form_settings['addr02_placeholder'] }}">
+          {% else %}
+            <input type="text" class='{% if shop_form_settings["addr02_require"] %}validate[required]{% endif %}' id='order_billing_address_attributes_addr02' name='order[billing_address_attributes][addr02]' placeholder="{{ shop_form_settings['addr02_placeholder'] }}"
+                   value='{% if order.billing_address %}{{ order.billing_address.addr02 }}{{ order.billing_address.addr03 }}{% elsif order.customer.billing_address %}{{ order.customer.billing_address.addr02 }}{{ order.customer.billing_address.addr03 }}{% endif %}'>
+          {% endif %}
+        </div>
+      </fieldset>
+    </div>
+
+    <!-- 住所3 -->
+    {% if shop_form_settings['addr03'] %}
+      <div class='hide-on-amazon-pay'>
+        <fieldset>
+          <label>{{ shop_form_settings['addr03_label'] }}</label>
+          <div class="full">
+            <input type="text" id='order_billing_address_attributes_addr03' name='order[billing_address_attributes][addr03]' value='{% if order.billing_address %}{{ order.billing_address.addr03 }}{% else %}{{ order.customer.billing_address.addr03 }}{% endif %}' placeholder="{{ shop_form_settings['addr03_placeholder'] }}">
+          </div>
+        </fieldset>
+      </div>
+    {% endif %}
+
+    <!-- 電話番号 -->
+    <div class='hide-on-amazon-pay'>
+      <fieldset>
+        <label>電話番号 <span class="text-danger">※</span></label>
+        {% if shop_form_settings['tel_1_field'] %}
+          <div class="full">
+            <input type="text" class='validate[required,custom[integer]]' maxlength='12' name='order[billing_address_attributes][tel01]' value='{% if order.billing_address %}{{ order.billing_address.full_tel }}{% else %}{{ order.customer.billing_address.full_tel }}{% endif %}' placeholder="例）09012345678">
+          </div>
+        {% else %}
+          <div class="phone">
+            <input type="text" class='validate[required,custom[integer]]' maxlength='4' name='order[billing_address_attributes][tel01]' value='{% if order.billing_address %}{{ order.billing_address.tel01 }}{% else %}{{ order.customer.billing_address.tel01 }}{% endif %}' placeholder="例）090">
+            <span>-</span>
+            <input type="text" class='validate[required,custom[integer]]' maxlength='4' name='order[billing_address_attributes][tel02]' value='{% if order.billing_address %}{{ order.billing_address.tel02 }}{% else %}{{ order.customer.billing_address.tel02 }}{% endif %}' placeholder="例）1234">
+            <span>-</span>
+            <input type="text" class='validate[required,custom[integer]]' maxlength='4' name='order[billing_address_attributes][tel03]' value='{% if order.billing_address %}{{ order.billing_address.tel03 }}{% else %}{{ order.customer.billing_address.tel03 }}{% endif %}' placeholder="例）5678">
+          </div>
+        {% endif %}
+      </fieldset>
+    </div>
+
+      <!-- メールアドレス -->
+      <fieldset>
+        <label>メールアドレス <span class="text-danger">※</span></label>
+        <div class="full">
+          {% if customer_signed_in %}
+            <input disabled id='email' type='email' value='{{ current_customer.email }}'>
+            <input name='order[email]' type='hidden' value='{{ current_customer.email }}'>
+            <input name='order[customer_attributes][email]' type='hidden' value='{{ current_customer.email }}'>
+          {% else %}
+            <input type="email" name='order[email]' id='email' class='validate[required,custom[email],ajax[emailCheck]]' value="{% if order.email %}{{ order.email }}{% elsif line_email %}{{ line_email }}{% endif %}" placeholder="例）mt@mix-tape.tokyo">
+            <input name='order[customer_attributes][email]' type='hidden' value='{{ order.email }}' id='customer_email'>
+          {% endif %}
+        </div>
+      </fieldset>
+
+    <!-- FAX番号 -->
+    {% if shop_form_settings['fax'] %}
+      <div class='hide-on-amazon-pay'>
+        <fieldset>
+          <label>FAX番号</label>
+          {% if shop_form_settings['fax_1_field'] %}
+            <div class="full">
+              <input type="tel" maxlength='12' name='order[billing_address_attributes][fax01]' value='{% if order.billing_address %}{{ order.billing_address.full_fax }}{% else %}{{ order.customer.billing_address.full_fax }}{% endif %}' placeholder="例）0312345678">
+            </div>
+          {% else %}
+            <div class="phone">
+              <input type="tel" maxlength='4' name='order[billing_address_attributes][fax01]' value='{% if order.billing_address %}{{ order.billing_address.fax01 }}{% else %}{{ order.customer.billing_address.fax01 }}{% endif %}' placeholder="例）03">
+              <span>-</span>
+              <input type="tel" maxlength='4' name='order[billing_address_attributes][fax02]' value='{% if order.billing_address %}{{ order.billing_address.fax02 }}{% else %}{{ order.customer.billing_address.fax02 }}{% endif %}' placeholder="例）1234">
+              <span>-</span>
+              <input type="tel" maxlength='4' name='order[billing_address_attributes][fax03]' value='{% if order.billing_address %}{{ order.billing_address.fax03 }}{% else %}{{ order.customer.billing_address.fax03 }}{% endif %}' placeholder="例）5678">
+            </div>
+          {% endif %}
+        </fieldset>
+      </div>
+    {% endif %}
+
+    <!-- 会社名 -->
+    {% if shop_form_settings['company'] %}
+      <div class='hide-on-amazon-pay'>
+        <fieldset>
+          <label>会社名</label>
+          <div class="full">
+            <input type="text" name='order[billing_address_attributes][company_name]' value='{% if order.billing_address %}{{ order.billing_address.company_name }}{% else %}{{ order.customer.billing_address.company_name }}{% endif %}'>
+          </div>
+        </fieldset>
+      </div>
+    {% endif %}
+
+    <!-- 性別 -->
+    {% if shop_form_settings["sex"] %}
+      <fieldset>
+        <label>性別</label>
+        <div class="full">
+          <div class="custom-select">
+            <select class="{% if shop_form_settings['sex_require'] %}validate[required]{% endif %}" name='order[customer_attributes][sex_id]'>
+              <option value=''>選択してください</option>
+              <option value='1' {% if order.customer.sex.id == 1 %}selected{% endif %}>男性</option>
+              <option value='2' {% if order.customer.sex.id == 2 %}selected{% endif %}>女性</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    {% endif %}
+
+    <!-- 職業 -->
+    {% if shop_form_settings["job"] %}
+      <fieldset>
+        <label>職業</label>
+        <div class="full">
+          <div class="custom-select">
+            <select class='{% if shop_form_settings["job_require"] %}validate[required]{% endif %}' name='order[customer_attributes][job_id]'>
+              <option value=''>選択してください</option>
+              {% for j in jobs %}
+                <option value="{{ j.id }}" {% if order.customer.job.id == j.id %}selected{% endif %}>{{ j.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    {% endif %}
+
+    <!-- 生年月日 -->
+    {% if shop_form_settings["birth"] %}
+      <fieldset>
+        <label>生年月日</label>
+        <div class="short">
+          <div class="custom-select">
+            <select class='{% if shop_form_settings["birth_require"] %}validate[required]{% else %}validate[condRequired[order_customer_attributes_birth_2i,order_customer_attributes_birth_3i]]{% endif %}' id='order_customer_attributes_birth_1i' name='order[customer_attributes][birth(1i)]'>
+              {% if birth_year_default_value == 0 %}
+                <option value="">----</option>
+              {% endif %}
+              {% assign now_year = "now" | date: "%Y" %}
+              {% assign past_100_years = "now" | date: "%Y" | minus: 100 %}
+              {% for y in (past_100_years..now_year) %}
+                {% if birth_year_default_value == y %}
+                  {% if order.customer.birth_year == nil %}
+                    <option value="" selected="true">----</option>
+                  {% else %}
+                    <option value="">----</option>
+                  {% endif %}
+                {% endif %}
+                <option value="{{ y }}" {% if order.customer.birth_year == y %}selected{% endif %}>{{ y }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          &nbsp;
+          <div class="custom-select">
+            <select class='{% if shop_form_settings["birth_require"] %}validate[required]{% else %}validate[condRequired[order_customer_attributes_birth_1i,order_customer_attributes_birth_3i]]{% endif %}' id='order_customer_attributes_birth_2i' name='order[customer_attributes][birth(2i)]'>
+              <option value=''>--</option>
+              {% for m in (1..12) %}
+                <option value="{{ m }}" {% if order.customer.birth_month == m %}selected{% endif %}>{{ m }} 月</option>
+              {% endfor %}
+            </select>
+          </div>
+          &nbsp;
+          <div class="custom-select">
+            <select class='{% if shop_form_settings["birth_require"] %}validate[required]{% else %}validate[condRequired[order_customer_attributes_birth_1i,order_customer_attributes_birth_2i]]{% endif %}' id='order_customer_attributes_birth_3i' name='order[customer_attributes][birth(3i)]'>
+              <option value=''>--</option>
+              {% for d in (1..31) %}
+                <option value="{{ d }}" {% if order.customer.birth_day == d %}selected{% endif %}>{{ d }} 日</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    {% endif %}
+  </div>
+{% endif %}

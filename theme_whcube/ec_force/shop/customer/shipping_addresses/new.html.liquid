@@ -1,0 +1,82 @@
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
+<script src="/assets/shop/customers/shipping_addresses.js"></script>
+<div class="wrap">
+  <section id="shipping-address-new-view">
+    <form class="simple_form form-horizontal" novalidate="novalidate" action="/shop/customer/shipping_addresses" accept-charset="UTF-8" method="post">
+      <div class="inner">
+        <h2 class="page-title">お届け先の作成</h2>
+        <div class="form-box">
+          <fieldset>
+            <label>お名前<span class="must"> ※ </span></label>
+            <div class="short">
+              <input class="validate[required]" maxlength="32" size="15" placeholder="例）山田" type="text" name="address_customer_shipping[name01]" id="address_customer_shipping_name01">
+              <input class="validate[required]" size="15" placeholder="例）花子" type="text" name="address_customer_shipping[name02]" id="address_customer_shipping_name02">
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>フリガナ<span class="must"> ※ </span></label>
+            <div class="short">
+              <input class="validate[required]" maxlength="32" size="15" placeholder="例）ヤマダ" type="text" name="address_customer_shipping[kana01]" id="address_customer_shipping_kana01">
+              <input class="validate[required]" size="15" placeholder="例）ハナコ" type="text" name="address_customer_shipping[kana02]" id="address_customer_shipping_kana02">
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>郵便番号<span class="must"> ※ </span></label>
+            <div class="short">
+              <input class="validate[required]" size="5" placeholder="例）100" type="text" name="address_customer_shipping[zip01]" id="address_customer_shipping_zip01">
+              <span>-</span>
+              <input class="validate[required]" size="6" placeholder="例）0000" type="text" name="address_customer_shipping[zip02]" id="address_customer_shipping_zip02">
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>都道府県<span class="must"> ※ </span></label>
+            <div class="full">
+              <select class="form-control input-sm validate[required]" name="address_customer_shipping[prefecture_name]" id="address_customer_shipping_prefecture_name">
+                <option value="">選択してください</option>
+                {% for prefecture in prefectures %}
+                  <option value={{ prefecture.name }}>{{ prefecture.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>市郡区/町・村<span class="must"> ※ </span></label>
+            <div class="full">
+              <input class="validate[required] margin-bottom-5" placeholder="例）新宿区" size="50" type="text" name="address_customer_shipping[addr01]" id="address_customer_shipping_addr01">
+              <p class="small">※番地が抜けていないかご確認ください。</p>
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>丁目・番地・マンション名・号室<span class="must"> ※ </span></label>
+            <div class="full">
+              <input class="validate[required]" placeholder="例）西新宿マンション 204" size="50" type="text" name="address_customer_shipping[addr02]" id="address_customer_shipping_addr02">
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>お電話番号<span class="must"> ※ </span></label>
+            <div class="phone">
+              <input class="validate[required]" placeholder="例）03" size="5" type="text" name="address_customer_shipping[tel01]" id="address_customer_shipping_tel01">
+              <span>-</span>
+              <input class="validate[required]" placeholder="例）0000" size="5" type="text" name="address_customer_shipping[tel02]" id="address_customer_shipping_tel02">
+              <span>-</span>
+              <input class="validate[required]" placeholder="例）0000" size="5" type="text" name="address_customer_shipping[tel03]" id="address_customer_shipping_tel03">
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>FAX 番号</label>
+            <div class="phone">
+              <input placeholder="例）03" size="5" type="text" name="address_customer_shipping[fax01]" id="address_customer_shipping_fax01" style="ime-mode: disabled;">
+              <span>-</span>
+              <input placeholder="例）0000" size="5" type="text" name="address_customer_shipping[fax02]" id="address_customer_shipping_fax02">
+              <span>-</span>
+              <input placeholder="例）0000" size="5" type="text" name="address_customer_shipping[fax03]" id="address_customer_shipping_fax03">
+            </div>
+          </fieldset>
+          <center><a href="/shop/customer/shipping_addresses">戻る</a></center>
+          <center><input type="submit" name="commit" value="作成する" class="btn btn-black"></center>
+        </div>
+      </div>
+    </form>
+  </section>
+</div>

@@ -1,0 +1,34 @@
+{{ 'shop/customers/sessions' | javascript_include_tag }}
+
+{% content_for meta_description %}
+【公式】mixtape
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+mixtape,スキンケア,コスメ
+{% endcontent_for %}
+
+{% content_for title %}
+mixtape
+{% endcontent_for %}
+
+
+<div class="wrap about">
+
+  <section id="customers-sessions-sign-in-view">
+    <form action="/shop/customers/sign_in" method="post">
+      <div class="inner text-center">
+        <h2 class="h2 mb-2 page-title">LOGIN</h1>
+        <div class="form-box">
+          <input type="email" name="customer[email]" class="form-control validate[required] margin-bottom-10" placeholder="メールアドレス">
+          <input type="password" name="customer[password]" class="form-control validate[required] margin-bottom-10" placeholder="パスワード">
+          <p class="pt-1"><input type="checkbox"> パスワードをパソコンに記憶させる</p>
+          <input type="submit" class="btn btn-black" value="ログイン">
+          <a href="/shop/customers/password/new" class="mt-2 text-center d-block">パスワードを忘れた方</a>
+          <a href="/shop/customers/sign_up" class="mt-2 text-center d-block">はじめてご利用の方（新規会員登録）</a>
+        </div>
+      </div>
+    </form>
+  </section>
+
+</div>

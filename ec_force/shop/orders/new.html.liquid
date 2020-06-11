@@ -1,0 +1,175 @@
+{{ 'shop/orders' | javascript_include_tag }}
+{{ 'shop/amazon_pay' | stylesheet_link_tag }}
+
+{% content_for meta_description %}
+description
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+keyowrds
+{% endcontent_for %}
+
+{% content_for title %}
+ご注文情報の入力｜mixtape
+{% endcontent_for %}
+
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
+
+<style>
+ header.header {
+   display: none;
+ }
+ header.header.orders {
+   display: block;
+   position: inherit;
+ }
+ header.header .header-inner-mobile {
+   display: none;
+ }
+ footer .footer-inner {
+   display: none;
+ }
+</style>
+
+{{ 'notice' | flash: 'alert success', 'text' }}
+{{ 'alert' | flash: 'alert danger', 'text' }}
+
+<header class="header orders">
+  <a href="/"><img src="https://ec-force.s3.amazonaws.com/mixtapetokyo/uploads/img/mixtape_logo_Black.png" alt="mixtape" class="logo-pc"></a>
+</header>
+
+<div class="wrap orders">  
+  <section>
+    
+    <div class="inner">
+      <h1 class="h2 mb-2">CHECKOUT</h1>
+      
+      <ul class="purchase_step d-flex justify-content-center fs-14 mb-pc-5 mb-3">
+        <!--
+        <li class="done">
+          <i class="fas fa-circle"></i> <span>新規会員登録</span>
+        </li>
+        -->
+        <li class="active">
+          <i class="fad fa-circle"></i> <span>注文情報入力</span>
+        </li>
+        <li>
+          <i class="fal fa-circle"></i> <span>注文情報確認</span>
+        </li>
+        <li>
+          <i class="fal fa-circle"></i> <span>注文完了</span>
+        </li>
+      </ul>
+
+      <form action="/shop/order" method="post">
+        <div class="form-outer d-flex row-reverse justify-content-between align-items-baseline">
+          <div class="bottom-space-big orders_detail">
+            <center>
+              <input type="submit" class="purchase btn btn-black btn-block margin-bottom-20 d-pc-block d-none" value="確認画面へ進む">
+            </center>
+            <table class="table-cart mb-0">
+              <tr>
+                <th>商品名</th>
+                <th>価格(税抜)</th>
+                <th>数量</th>
+                <th>小計</th>
+              </tr>
+              {% for order_item in order.order_items %}<tr>
+                <td>
+                  <a href="/shop/products/{{ order_item.product.master.sku }}">
+                    {{ order_item.product.name }}
+                  </a><br />
+                  <span class="small">{% for option_value in order_item.variant.option_values %}
+                    / {{ option_value.name }}
+                  {% endfor %}</span>
+                  
+                </td>
+                <td class="text-right">{{ order_item.variant.sales_price | number_to_currency }}</td>
+                <td class="text-center">{{ order_item.quantity }}</td>
+                <td class="text-right">{{ order_item.price | times: order_item.quantity | number_to_currency: format: '%n %u' }}</td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+          
+          
+          <div class="form-box " id="new-view">
+            <div id="TokenJs"></div>
+
+            {% if order.error_messages != empty %}
+              <div class="alert danger mb-10">
+                {% for error_message in order.error_messages %}
+                  {{ error_message }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            
+            <p class="text-center lh-2 mb-3">必要事項を記入してください。<br />
+              各項目の入力が終わりましたら「確認画面へ進む」ボタンをクリックしてください。<br />
+              必須項目 「<span class="text-danger"> ※</span> 」印は入力必須項目です。</p>
+            
+            {% unless customer_signed_in %}
+              <div id="AmazonPayOneClickOrderArea" class="mb-14" style="display: none;">
+                <div class="amazon_pay_box">
+                  <div class="amazon_pay_title">ワンクリックで簡単お申込みする！</div>
+                  <div class="amazon_pay_button_wrapper">
+                    <div class="amazon_pay_button_area">
+                      <div class="amazon_pay_payments_area">
+                        <div class="amazon_pay_subtitle">Amazonアカウントをお持ちの方</div>
+                        <div class="amazon_pay_button_all" id="AmazonPayButtonAll"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="amazon_pay_message">アカウントに登録しているお支払い情報、お届け先情報をご使用してワンクリックでお申込みが可能です。</div>
+                </div>
+                <div class="amazon_pay_not_use_message">上記アカウントをお持ちでない方は、下記よりお客様情報をご入力下さい</div>
+              </div>
+            {% endunless %}
+
+            
+            {% if line_settings['display_btn'] == '1' %}
+              {% if customer_signed_in == false and encrypted_line_id == nil %}
+                <!-- LINE ID 説明ポップアップ -->
+                {{ line_settings['information_context'] }}
+                <!-- LINE ID 連携ボタン（リンク） -->
+                <a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id={{ line_settings['channel_id'] }}&redirect_uri={{ site_url }}/line/authorize&state={{ line_state }}&scope={% if line_settings['email_permission'] == '1' %}openid%20email{% else %}openid{% endif %}&nonce={{ line_nonce }}&max_age=500&bot_prompt=normal">LINE ID 連携</a>
+              {% elsif customer_signed_in == true and current_customer.line_id? == false %}
+                <!-- LINE ID 説明ポップアップ -->
+                {{ line_settings['information_context'] }}
+                <!-- LINE ID 連携ボタン（リンク） -->
+                <a href="https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id={{ line_settings['channel_id'] }}&redirect_uri={{ site_url }}/line/authorize&state={{ line_state }}&scope={% if line_settings['email_permission'] == '1' %}openid%20email{% else %}openid{% endif %}&nonce={{ line_nonce }}&max_age=500&bot_prompt=normal">LINE ID 連携</a>
+              {% endif %}
+            {% endif %}
+
+            
+            <input name="_method" type="hidden" value="put">
+            <input name="order[state]" type="hidden" value="new">
+
+            <!-- 各入力フォーム部分テンプレート(PC用) -->
+            {% include 'ec_force/shop/orders/view_billing_information.html' %}
+            {% include 'ec_force/shop/orders/view_shipping_information.html' %}
+            {% include 'ec_force/shop/orders/view_wrapping_information.html' %}
+            {% include 'ec_force/shop/orders/view_point_redeem.html' %}
+            {% include 'ec_force/shop/orders/view_coupon.html' %}
+            {% include 'ec_force/shop/orders/view_payment_information.html' %}
+            {% include 'ec_force/shop/orders/view_shipping_carrier.html' %}
+            {% include 'ec_force/shop/orders/view_payment_schedule.html' %}
+            {% include 'ec_force/shop/orders/view_optin.html' %}
+
+            <center>
+              <input type="submit" class="btn btn-black btn-block margin-bottom-20" value="確認画面へ進む">
+            </center>
+            
+            <center><a href="/shop/cart" class="margin-bottom-10 block">カートへ戻る</a></center>
+
+            <!-- form -->
+            <p class="small">当サイトはSSL暗号化通信に対応しております。ご注文内容やクレジットカード番号など、お客様の大切な情報は暗号化して送信されます。第三者から解読できないようになっております。</p>
+            
+          </div>
+          
+        </div>
+      </form>
+    </div>
+  </section>
+    </div>

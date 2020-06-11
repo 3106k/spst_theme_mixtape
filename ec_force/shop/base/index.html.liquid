@@ -1,0 +1,84 @@
+{{ 'shop/base' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+mixtape
+{% endcontent_for %}
+
+<div class="wrap">
+
+  <section class="kv">
+    <img src="https://ec-force.s3.amazonaws.com/mixtapetokyo/uploads/img/top/kv01-pc.jpg?1591762121075" alt="mixtape" />
+  </section>
+
+  {% if sale_products.size != 0 %}
+  <section class="slider-popular-container">
+    <h2 class="h2">POPULAR ITEM</h2>
+    <div class="slider-popular">
+      {% for product in sale_products %}{% if product.thumbnail.url %}{% assign src = product.thumbnail.url %}{% else %}{% assign src = 'missing' | image_url %}{% endif %}
+      <div class="item">
+        <a href="/shop/products/{{ product.master.sku }}">
+          <img src="{{ src }}" alt="{{ product.name }}" />
+          <h3>{{ product.name }}</h3>
+          {% if product.variants[0].list_price %}{%if product.variants[0].list_price != product.first_price %}{% assign first_price = product.variants[0].list_price | round:2 %}{% assign price = product.first_price | divided_by: first_price %}{% assign price = 1 | minus: price | times: 100 %}{% assign price = price | round%}
+            <p class="price sale">¥ {{ product.first_price | number_to_currency: format: '%n' }} <span class="discount">({{ price }}%OFF)</span</p>
+          {% else %}<p class="price">¥ {{ product.first_price | number_to_currency: format: '%n' }}</p>{% endif %}{% else %}
+          <p class="price">¥ {{ product.first_price | times: tax | plus: product.first_price | number_to_currency: format: '%n' }}</p>
+          {% endif %}
+          <p class="description">{{ product.parsed_sub_description }}</p>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+  
+  <section class="all_item_container">{% assign count = 0 %}
+    <h2 class="h2">ALL ITEM</h2>
+    <ul class="d-flex all_item">
+      {% for product in products %}{% if product.thumbnail.url %}{% assign src = product.thumbnail.url %}{% else %}{% assign src = 'missing' | image_url %}{% endif %}{%if count == 16 %}{% break %}{% else %}<li class="item">
+        <a href="/shop/products/{{ product.master.sku }}">
+          <img src="{{ src }}" alt="{{ product.name }}" />
+          <h3>{{ product.name }}</h3>
+          {% if product.variants[0].list_price %}{%if product.variants[0].list_price != product.first_price %}{% assign first_price = product.variants[0].list_price | round:2 %}{% assign price = product.first_price | divided_by: first_price %}{% assign price = 1 | minus: price | times: 100 %}{% assign price = price | round%}
+            <p class="price sale">¥ {{ product.first_price | number_to_currency: format: '%n' }} <span class="discount">({{ price }}%OFF)</span</p>
+          {% else %}<p class="price">¥ {{ product.first_price | number_to_currency: format: '%n' }}</p>{% endif %}{% else %}
+          <p class="price">¥ {{ product.first_price | times: tax | plus: product.first_price | number_to_currency: format: '%n' }}</p>
+          {% endif %}
+        </a>
+      </li>{% assign count = count | plus: 1%}{% endif %}{% endfor %}
+    </ul>
+    <a href="/shop/products" class="btn btn-cart more">VIEW MORE</a>
+  </section>
+
+
+  <!-- search -->
+  <section class="category-search mobile">
+    <h2 class="category-search-title">カテゴリ検索<img src="{{ file_root_path }}/img/parts/minus.png" class="category-search-minus"><img src="{{ file_root_path }}/img/parts/plus.png" class="category-search-plus"></h2>
+    <ul>
+      <!--<li><a href="">NEW</a></li>-->
+      {% for product_category in product_categories %}
+      {% assign ignore_product_categories = 'レディース メンズ' | split: ' ' %}
+      {% unless ignore_product_categories contains product_category.name %}
+        <li><a href="/shop/search?q%5Bproduct_category_names_cont_all%5D%5B%5D={{ product_category.name }}">{{ product_category.name }}</a></li>
+      {% endunless %}
+      {% endfor %}
+    </ul>
+  </section>
+  <script>
+    $('.category-search-plus').hide();
+    $(document).on('click', '.category-search-title', function() {
+        $(this).next('ul').toggle();
+        $(this).find('.category-search-minus').toggle();
+        $(this).find('.category-search-plus').toggle();
+    });
+  </script>
+  <!-- search -->
+  <!-- banner mobile & ipad -->
+
+</div>

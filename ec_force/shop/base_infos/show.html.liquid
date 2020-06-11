@@ -1,0 +1,57 @@
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+
+{% endcontent_for %}
+
+{% content_for title %}
+当サイトについて｜
+{% endcontent_for %}
+
+{{ 'shop/info' | javascript_include_tag }}
+
+<div class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/shop">トップページ</a></li>
+      <li>当サイトについて</li>
+    </ul>
+    <h1>
+      <span>About</span>
+      当サイトについて
+    </h1>
+    <table class="info-table">
+      <tbody>
+        <tr>
+          <th>ショップ名</th>
+          <td>{{ base_info.shop_name }}</td>
+        </tr>
+        <tr>
+          <th>会社名(屋号)</th>
+          <td>{{ base_info.company_name }}</td>
+        </tr>
+        <tr>
+          <th>所在地</th>
+          <td>〒 {{ base_info.zip01 }} - {{ base_info.zip02 }} {{ base_info.prefecture_name }} {{ base_info.addr01 }} {{ base_info.addr02 }}</td>
+        </tr>
+        <tr>
+          <th>電話番号</th>
+          <td>{{ base_info.tel }}</td>
+        </tr>
+        <tr>
+          <th>メールアドレス</th>
+          <td>{{ base_info.contact_email }}</td>
+        </tr>
+        <tr>
+          <th>営業時間</th>
+          <td>{{ base_info.business_hour }}</td>
+        </tr>
+        <tr>
+          <th>取扱商品</th>
+          <td>{{ base_info.good_traded }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

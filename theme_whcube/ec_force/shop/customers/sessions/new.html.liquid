@@ -1,0 +1,57 @@
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
+<script src="/assets/shop/customers/sessions.js"></script>
+<!--<script src="/assets/shop/customers/registrations.js"></script>-->
+
+<div class="wrap">
+  <!-- login -->
+  <section id="customers-sessions-sign-in-view">
+    <form action="/shop/customers/sign_in" method="post">
+      <div class="inner text-center">
+        <h2 class="page-title">LOGIN</h1>
+        <div class="form-box">
+          <input type="email" name="customer[email]" class="validate[required] margin-bottom-10" placeholder="メールアドレス">
+          <input type="password" name="customer[password]" class="validate[required] margin-bottom-10" placeholder="パスワード">
+          <p><input type="checkbox"> パスワードをパソコンに記憶させる</p>
+          <a href="/shop/customers/password/new" class="margin-bottom-10 block">パスワードを忘れた方はこちら</a>
+          <input type="submit" class="btn btn-black" value="ログイン">
+        </div>
+      </div>
+    </form>
+  </section>
+  <!-- login -->
+  <!-- create new -->
+  <section class="create">
+    <form class="simple_form form-horizontal" novalidate="novalidate" id="new_customer" action="/shop/customers" accept-charset="UTF-8" method="post">
+      <div class="inner">
+        <h2 class="page-title">新規登録</h1>
+        <div class="form-box">
+          <p class="margin-bottom-20">必須項目 「 ※ 」印は入力必須項目です。</p>
+          <!--
+          <fieldset>
+            <label>お名前<span class="must"> ※ </span></label>
+            <div class="short">
+              <input type="text" name="customer[billing_address_attributes][name01]" id="customer_billing_address_attributes_name01" class="validate[required]" placeholder="例：山田">
+              <input type="text" name="customer[billing_address_attributes][name02]" id="customer_billing_address_attributes_name02" class="validate[required]" placeholder="例：花子">
+            </div>
+          </fieldset>
+          -->
+          <fieldset>
+            <label>メールアドレス<span class="must"> ※ </span></label>
+            <div class="long">
+              <input type="email" name="customer[email]" id="customer_email" class="validate[required,custom[email]]" placeholder="test@gmail.com">
+            </div>
+          </fieldset>
+          <fieldset>
+            <label>パスワード<span class="must"> ※ </span></label>
+            <div class="long">
+              <input type="password" name="customer[password]" id="customer_password" class="validate[required,minSize[8]]" placeholder="例）半角英数字8文字以上">
+            </div>
+          </fieldset>
+          <center><input type="submit" name="commit" class="btn btn-black" value="新規登録"></center>
+        </div>
+      </div>
+    </form>
+  </section>
+  <!-- create new -->
+</div>

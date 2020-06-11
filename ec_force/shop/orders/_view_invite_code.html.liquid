@@ -1,0 +1,12 @@
+<!-- 招待コードテンプレート -->
+<div id='view-invite-code'>
+
+  <!-- 招待コード入力欄 -->
+  {% if customer_signed_in and current_customer.buy_times == 0 %}
+    <label>招待コード</label>
+      <input type="text" name="order[invite_code]" placeholder="例）390039ca82">
+      <input type="hidden" name="order[customer_attributes][invite_codes_invitee_attributes][invite_code_id]" value="">
+      ※招待コードをお持ちのお客様はこちらにご入力下さい。
+  {% endif %}
+
+</div>

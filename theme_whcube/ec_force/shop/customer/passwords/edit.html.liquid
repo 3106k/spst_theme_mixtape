@@ -1,0 +1,25 @@
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
+<script src="/assets/shop/customers/password.js"></script>
+<div class="wrap">
+  <!-- reset -->
+  <section id="customers-password-edit-view">
+    <form class="simple_form form-horizontal" novalidate="novalidate" id="new_customer" action="/shop/customers/password" accept-charset="UTF-8" method="post">
+      <input name="_method" type="hidden" value="put">
+      <div class="inner text-center">
+        <h2 class="page-title">パスワード変更</h1>
+        <div class="form-box">
+          <form class="simple_form form-horizontal" novalidate="novalidate" id="new_customer" action="/shop/customer/password" accept-charset="UTF-8" method="post">
+            <input name="_method" type="hidden" value="put">
+            <p class="margin-bottom-10">新しいパスワード<span class="text-pink">必須</span></p>
+            <input class="validate[required] margin-bottom-10" type="password" name="customer[password]" id="password">
+            <p class="margin-bottom-10">新しいパスワード（確認）<span class="text-pink">必須</span></p>
+            <input class="validate[required,equals[password]] margin-bottom-20" type="password" name="customer[password_confirmation]">
+            <input type="submit" name="commit" value="保存する" class="btn btn-black">
+          </form>
+        </div>
+      </div>
+    </form>
+  </section>
+  <!-- reset -->
+</div>

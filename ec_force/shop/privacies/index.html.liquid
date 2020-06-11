@@ -1,0 +1,37 @@
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+
+{% endcontent_for %}
+
+{% content_for title %}
+プライバシーポリシー｜
+{% endcontent_for %}
+
+{{ 'shop/info' | javascript_include_tag }}
+
+<div class="wrap about">
+  <div class="container">
+    <ul class="breadcrumb">
+      <li><a href="/shop">トップページ</a></li>
+      <li>プライバシーポリシー</li>
+    </ul>
+    <h1>
+      <span>Privacy policy</span>
+      プライバシーポリシー
+    </h1>
+    <table class="info-table">
+      <tbody>
+        {% for privacy in privacies %}
+          <tr>
+            <th>{{ privacy.title }}</th>
+            <td>{{ privacy.text }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+  </div>
+</div>

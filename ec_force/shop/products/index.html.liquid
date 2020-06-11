@@ -1,0 +1,105 @@
+{{ 'shop/base' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+mixtape
+{% endcontent_for %}
+
+{% assign count = 0 %}
+{% capture product_category_path %}
+  {% for product_category in product_category.path %}
+    <a href='/shop/product_categories/{{ product_category.id }}?q%5Bby_product_category_name%5D=レディース'>{{ product_category.name }}</a> >
+    {% assign count = count | plus: 1%}
+  {% endfor %}
+{% endcapture %}
+{% if count > 0 %}
+  <div class="inner overflow">
+    <h2 class="brand-name">{{ product_category_path }}</h2>
+  </div>
+{% endif %}
+
+<div class="wrap">
+  <section class="information product_list">
+    <ul>
+      <li>¥ 3,000 以上のご注文で配送料無料</li>
+    </ul>
+  </section>
+
+  <section class="product_list">
+    <h1 class="h1"></h1>
+
+    <div class="d-flex justify-content-between page_summary">
+      <p>
+        <span class='result'>12</span>
+        件該当しました
+      </p>
+      <p>
+        <a class="sort_link " href="/shop/products?q%5Bs%5D=created_at+desc">登録日</a> |
+        <a class="sort_link " href="/shop/products?q%5Bs%5D=master_sales_price+desc">価格</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="all_item_container">
+    <ul class="d-flex all_item">
+      {% for product in products %}
+      <li class="item">
+        <a href="/shop/products/{{ product.master.sku }}"><img src="{{ product.master.thumbnails[0].url_large }}" alt="{{ product.name }}" class=""></a>
+        <h3>{{ product.name }}</h3>
+        <p class="price">{{ product.master.sales_price | times:1.08 | number_to_currency: unit: '¥', format: '%u %n'}}</p>
+        <p>late {{product.point_event.point_ratio}}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- ページネーション -->
+  {% paginate products_all by 10 %}
+
+  <p class="text-center mb-2">
+  {% if paginate.items == 0 %}
+    0 件表示中です
+  {% else %}
+    {{ paginate.items }} 件中
+    {% assign per_page = paginate.page_size | times: paginate.current_page %}
+    {{ per_page | minus: paginate.page_size | plus: 1 }} - {% if paginate.items < per_page %}{{ paginate.items }}{% else %}{{ per_page }}{% endif %} 件を表示しています
+  {% endif %}
+  </p>
+  
+  <!-- ページネーションリンク -->
+  <div class="pagination mb-4">
+    <ul class='pagination-number pagination-sm'>
+      {% if paginate.previous %}
+        <li class="page-item page-prev"><a href="{{ paginate.previous.url }}" class="page-link"></a></li>
+      {% endif %}
+      {% for page in paginate.parts %}
+        {% if paginate.current_page == page.title %}
+          <li class='active page-item'><a>{{ page.title }}</a></li>
+        {% elsif page.is_link %}
+          <li class='page-item'><a href="{{ page.url }}">{{ page.title }}</a></li>
+        {% else %}
+          <li class='page-item'><a>{{ page.title }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if paginate.next %}
+        <li class="page-item  page-next"><a href="{{ paginate.next.url }}" class="page-link"></a></li>
+      {% endif %}
+    </ul>
+  </div>
+{% endpaginate %}
+
+  <style>
+    ul {
+        list-style-type: none;
+    }
+  </style>
+
+  </div>
+
+
+</div>

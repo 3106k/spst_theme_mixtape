@@ -1,0 +1,414 @@
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
+<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
+<div class="wrap">
+  <section>
+    <div class="inner">
+      <h2 class="page-title">CHECKOUT</h1>
+      <div class="form-box">
+        <p>必要事項を記入してください。各項目の入力が終わりましたら「次へ」ボタンをクリックしてください。</p>
+        <p class="margin-bottom-20">必須項目 「 ※ 」印は入力必須項目です。</p>
+        
+        <!-- cart -->
+        <div class="bottom-space-big">
+          <h3 class="page-sub-title">ご注文内容</h3>
+          <table class="table-cart">
+            <tr>
+              <th>商品名</th>
+              <th>価格(税抜)</th>
+              <th>数量</th>
+              <th>小計</th>
+            </tr>
+            {% for order_item in order.order_items %}
+              <tr>
+                <td>
+                  <a href="/shop/products/{{ order_item.product.master.sku }}">
+                    {{ order_item.product.name }}
+                    {% for option_value in order_item.variant.option_values %}
+                      / {{ option_value.name }}
+                    {% endfor %}
+                  </a>
+                </td>
+                <td class="text-right">{{ order_item.variant.sales_price | number_to_currency }}</td>
+                <td class="text-center">{{ order_item.quantity }}</td>
+                <td class="text-right">{{ order_item.price | times: order_item.quantity | number_to_currency: format: '%n %u' }}</td>
+              </tr>
+            {% endfor %}
+            <tr>
+              <td colspan=3 class="text-right bold">商品合計</td>
+              <td class="text-right">{{ order.subtotal | number_to_currency: format: '%n %u' }}</td>
+            </tr>
+          </table>
+        </div>
+        <!-- cart -->
+        
+        <div id="new-view">
+        <!-- form -->
+        <form action='/shop/order' method='post'>
+          <input name='_method' type='hidden' value='put'/>
+          <input name='order[state]' type='hidden' value='new'/>
+          
+          <!-- user info -->
+          <div class="bottom-space-big">
+            {% if order.error_message %}
+              <p>{{ order.error_message }}</p>
+            {% endif %}
+            <h3 class="page-sub-title">お客様情報のご入力</h3>
+            <fieldset>
+              <label>お名前<span class="must"> ※ </span></label>
+              <div class="short">
+                <input type="text" name="order[billing_address_attributes][name01]" class="validate[required]" maxlength="32" placeholder="例）山田" value={% if order.billing_address %}{{ order.billing_address.name01 }}{% else %}{{ order.customer.billing_address.name01 }}{% endif %}>
+                <input type="text" name="order[billing_address_attributes][name02]" class="validate[required]" maxlength="32" placeholder="例）太郎"  value={% if order.billing_address %}{{ order.billing_address.name02 }}{% else %}{{ order.customer.billing_address.name02 }}{% endif %}>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>お名前（カナ）<span class="must"> ※ </span></label>
+              <div class="short">
+                <input type="text" name='order[billing_address_attributes][kana01]' class='validate[required]' maxlength="32" placeholder="例）ヤマダ" value={% if order.billing_address %}{{ order.billing_address.kana01 }}{% else %}{{ order.customer.billing_address.kana01 }}{% endif %}>
+                <input type="text" name='order[billing_address_attributes][kana02]' class='validate[required]' maxlength="32" placeholder="例）タロウ" value={% if order.billing_address %}{{ order.billing_address.kana02 }}{% else %}{{ order.customer.billing_address.kana02 }}{% endif %}>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>郵便番号<span class="must"> ※ </span></label>
+              <div class="short">
+                <span>〒</span>
+                <input id='order_billing_address_attributes_zip01' type="text" class='validate[required]' maxlength="3" name='order[billing_address_attributes][zip01]' maxlength="3" placeholder="例）100" value={% if order.billing_address %}{{ order.billing_address.zip01 }}{% else %}{{ order.customer.billing_address.zip01 }}{% endif %}>
+                <span>-</span>
+                <input id='order_billing_address_attributes_zip02' type="text" class='validate[required]' maxlength="4" name=order[billing_address_attributes][zip02] maxlength="4" placeholder="例）0000" value={% if order.billing_address %}{{ order.billing_address.zip02 }}{% else %}{{ order.customer.billing_address.zip02 }}{% endif %}>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>都道府県<span class="must"> ※ </span></label>
+              <div class="full">
+                <select id='order_billing_address_attributes_prefecture_name' name='order[billing_address_attributes][prefecture_id]' class="validate[required]">
+                  <option>都道府県を選択</option>
+                  {% for prefecture in prefectures %}
+                    {% if order.billing_address %}
+                      <option value={{ prefecture.id }} {% if prefecture.id == order.billing_address.prefecture_id %}selected{% endif %}>{{ prefecture.name }}</option>
+                    {% elsif order.customer.billing_address %}
+                      <option value={{ prefecture.id }} {% if prefecture.id == order.customer.billing_address.prefecture_id %}selected{% endif %}>{{ prefecture.name }}</option>
+                    {% else %}
+                      <option value={{ prefecture.id }}>{{ prefecture.name }}</option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>市郡区/町・村<span class="must"> ※ </span></label>
+              <div class="full">
+                <input id='order_billing_address_attributes_addr01' type="text" class='validate[required]' name='order[billing_address_attributes][addr01]' maxlength="64" placeholder="例）新宿区" value={% if order.billing_address %}{{ order.billing_address.addr01 }}{% else %}{{ order.customer.billing_address.addr01 }}{% endif %}>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>丁目・番地・マンション名・号室<span class="must"> ※ </span></label>
+              <div class="full">
+                <input id='order_billing_address_attributes_addr02' type="text" class='validate[required] margin-bottom-5' name='order[billing_address_attributes][addr02]' maxlength="64" placeholder="例）西新宿1-1-1" value={% if order.billing_address %}{{ order.billing_address.addr02 }}{% else %}{{ order.customer.billing_address.addr02 }}{% endif %}>
+                <p class="small">番地が抜けていないかご確認ください。</p>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>お電話番号<span class="must"> ※ </span></label>
+              <div class="phone">
+                <input type="text" class='validate[required]' name='order[billing_address_attributes][tel01]' maxlength="5" placeholder="例）03" value={% if order.billing_address %}{{ order.billing_address.tel01 }}{% else %}{{ order.customer.billing_address.tel01 }}{% endif %}>
+                <span>-</span>
+                <input type="text" class='validate[required]' name='order[billing_address_attributes][tel02]' maxlength="5" placeholder="例）0000" value={% if order.billing_address %}{{ order.billing_address.tel02 }}{% else %}{{ order.customer.billing_address.tel02 }}{% endif %}>
+                <span>-</span>
+                <input type="text" class='validate[required]' name='order[billing_address_attributes][tel03]' maxlength="5" placeholder="例）0000" value={% if order.billing_address %}{{ order.billing_address.tel03 }}{% else %}{{ order.customer.billing_address.tel03 }}{% endif %}>
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>メールアドレス<span class="must"> ※ </span></label>
+              <div class="full">
+                {% if customer_signed_in %}
+                  <input id='email' type="text" class='validate[required,custom[email],ajax[emailCheck]]' name='order[email]' maxlength="80" value={{ current_customer.email }} disabled>
+                {% else %}
+                  <input id='email' type="text" class='validate[required,custom[email],ajax[emailCheck]]' name='order[email]' maxlength="80" placeholder="例）yamada@example.co.jp" value={{ order.email }}>
+                  <input id='customer_email' type='hidden' name='order[customer_attributes][email]' value={{ order.email }}>
+                {% endif %}
+              </div>
+            </fieldset>
+            <fieldset>
+              <label>メールアドレス（確認）<span class="must"> ※ </span></label>
+              <div class="full">
+                {% if customer_signed_in %}
+                  <input type="text" class='validate[required,custom[email],ajax[emailCheck],equals[email]] margin-bottom-5' name='order[email_confirmation]' maxlength="80" value={{ current_customer.email }} disabled>
+                {% else %}
+                  <input type="text" class='validate[required,custom[email],ajax[emailCheck],equals[email]]' name='order[email_confirmation]' maxlength="80" placeholder="例）yamada@example.co.jp" value={{ order.email }}>
+                {% endif %}
+                <p class="small">注文確認メールを確実にお届けするため、メールアドレスを正確にご記入ください。</p>
+              </div>
+            </fieldset>
+          </div>
+          <!-- user info -->
+        
+          <!-- shipping info -->
+          <div id='view-shipping-information' class="bottom-space-big">
+            <h3 class="page-sub-title">お届け先情報</h3>
+            <fieldset>
+              <label>お届け先住所<span class="must"> ※ </span></label>
+              <div class="full">
+                <select id='shipping_address_id' name='order[shipping_address_id]'>
+                  <option value='same'>購入者の住所へ送る</option>
+                  {% if customer_signed_in %}
+                    {% for shipping_address in current_customer.shipping_addresses %}
+                      <option value={{ shipping_address.id }}>{{ shipping_address.full_name }} | 〒{{ shipping_address.full_zip }} {{ shipping_address.full_address }}</option>
+                    {% endfor %}
+                  {% endif %}
+                  <option value='new'>新しく入力する</option>
+                </select>
+              </div>
+            </fieldset>
+            <div id="shipping_address_input">
+              <fieldset>
+                <label>お名前<span class="must"> ※ </span></label>
+                <div class="short">
+                  <input type="text" name='order[shipping_address_attributes][name01]' class='validate[required]' maxlength="32" placeholder="例）山田" value={{ order.shipping_address.name01 }}>
+                  <input type="text" name='order[shipping_address_attributes][name02]' class="validate[required]" maxlength="32" placeholder="例）太郎" value={{ order.shipping_address.name02 }}>
+                </div>
+              </fieldset>
+              <fieldset>
+                <label>お名前（カナ）<span class="must"> ※ </span></label>
+                <div class="short">
+                  <input type="text" name='order[shipping_address_attributes][kana01]' class='validate[required]' maxlength="32" placeholder="例）ヤマダ" value={{ order.shipping_address.kana01 }}>
+                  <input type="text" name='order[shipping_address_attributes][kana02]' class='validate[required]' maxlength="32" placeholder="例）タロウ" value={{ order.shipping_address.kana02 }}>
+                </div>
+              </fieldset>
+              <fieldset>
+                <label>郵便番号<span class="must"> ※ </span></label>
+                <div class="short">
+                  <span>〒</span>
+                  <input id='order_shipping_address_attributes_zip01' type="text" class='validate[required]' name='order[shipping_address_attributes][zip01]' maxlength="3" placeholder="例）100" value={{ order.shipping_address.zip01 }}>
+                  <span>-</span>
+                  <input id='order_shipping_address_attributes_zip02' type="text" class='validate[required]' name=order[shipping_address_attributes][zip02] maxlength="4" placeholder="例）0000" value={{ order.shipping_address.zip02 }}>
+                </div>
+              </fieldset>
+              <fieldset>
+                <label>都道府県<span class="must"> ※ </span></label>
+                <div class="full">
+                  <select id='order_shipping_address_attributes_prefecture_name' name='order[shipping_address_attributes][prefecture_id]' class="validate[required]">
+                    <option>都道府県を選択</option>
+                    {% for prefecture in prefectures %}
+                      {% if order.shipping_address %}
+                        <option value={{ prefecture.id }} {% if prefecture.id == order.shipping_address.prefecture_id %}selected{% endif %}>{{ prefecture.name }}</option>
+                      {% else %}
+                        <option value={{ prefecture.id }}>{{ prefecture.name }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </fieldset>
+              <fieldset>
+                <label>市郡区/町・村<span class="must"> ※ </span></label>
+                <div class="full">
+                  <input id='order_shipping_address_attributes_addr01' type="text" class='validate[required]' name='order[shipping_address_attributes][addr01]' maxlength="64" placeholder="例）新宿区" value={{ order.shipping_address.addr01 }}>
+                </div>
+              </fieldset>
+              <fieldset>
+                <label>丁目・番地・マンション名・号室<span class="must"> ※ </span></label>
+                <div class="full">
+                  <input id='order_shipping_address_attributes_addr02' type="text" class='validate[required] margin-bottom-5' name='order[shipping_address_attributes][addr02]' maxlength="64" placeholder="例）西新宿1-1-1" value={{ order.shipping_address.addr02 }}>
+                  <p class="small">番地が抜けていないかご確認ください。</p>
+                </div>
+              </fieldset>
+              <fieldset>
+                <label>お電話番号<span class="must"> ※ </span></label>
+                <div class="phone">
+                  <input type="text" class='validate[required]' name='order[shipping_address_attributes][tel01]' maxlength="5" placeholder="例）03" value={{ order.shipping_address.tel01 }}>
+                  <span>-</span>
+                  <input type="text" class='validate[required]' name='order[shipping_address_attributes][tel02]' maxlength="5" placeholder="例）0000" value={{ order.shipping_address.tel02 }}>
+                  <span>-</span>
+                  <input type="text" class='validate[required]' name='order[shipping_address_attributes][tel03]' maxlength="5" placeholder="例）0000" value={{ order.shipping_address.tel03 }}>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <!-- shipping info -->
+        
+          <!-- payment info -->
+          <div id="view-payment-information" class="bottom-space-big">
+            <h3 class="page-sub-title">お支払い方法選択</h3>
+            <fieldset>
+              <label>お支払い方法<span class="must"> ※ </span></label>
+              <div class="full">
+                <select class="validate[required,custom[integer]]" id="payment_method_id" name="order[payment_attributes][payment_method_id]"></select>
+              </div>
+            </fieldset>
+            <div id="view-payment-times">
+              <fieldset>
+                <label>お支払い回数<span class="must"> ※ </span></label>
+                <div class="full">
+                  <select class="validate[required,custom[integer]]" id="order_payment_times" name="order[payment_attributes][payment_times]">
+                    {% assign payment_times = '3,5,6,10,12,15,18,20,24' | split: ',' %}
+                    {% for i in payment_times %}
+                      {% if order.payment and order.payment.payment_times == i %}
+                        <option value='{{ i }}' selected>{{ i }}</option>
+                      {% else %}
+                        <option value='{{ i }}'>{{ i }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </fieldset>
+            </div>
+            <div id="view-credit-card-number">
+              <fieldset>
+                <label>クレジットカード番号<span class="must"> ※ </span></label>
+                <div class="full">
+                  {% if current_customer_has_card %}
+                    <select id="card-id" name="order[payment_attributes][source_id]" class="margin-bottom-10">
+                      {% for credit_card in current_customer.credit_cards %}
+                        {% if credit_card.default %}
+                          <option selected value={{ credit_card.id }}>XXXX-XXXX-XXXX-{{ credit_card.last_digits }}</option>
+                        {% else %}
+                          <option value={{ credit_card.id }}>XXXX-XXXX-XXXX-{{ credit_card.last_digits }}</option>
+                        {% endif %}
+                      {% endfor %}
+                      <option value="0">新しく登録する</option>
+                    </select>
+                  {% endif %}
+                  <div id="view-input-card-number" style={% if current_customer_has_card %}"display:none;"{% endif %}>
+                    <input {% if current_customer_has_card %}disabled{% endif %} name="order[payment_attributes][source_attributes][default]" type="hidden" value="1">
+                    <input {% if current_customer_has_card %}disabled{% endif %} class="validate[required,creditCard] margin-bottom-5" name="order[payment_attributes][source_attributes][number]" type="text" placeholder="例）1234123412341234">
+                    <p class="small">数字のみで続けて入力してください。</p>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div id="view-input-card-expire" style={% if current_customer_has_card %}"display:none;"{% endif %}>
+              <fieldset>
+                <label>カードの有効期限<span class="must"> ※ </span></label>
+                <div class="short">
+                  <select {% if current_customer_has_card %}disabled{% endif %} class="validate[required,custom[integer]]" name="order[payment_attributes][source_attributes][month]">
+                    <option>--</option>
+                    {% for i in (1..12) %}
+                      <option value={{ i }}>{{ i }}</option>
+                    {% endfor %}
+                  </select>
+                  <span>月</span>
+                  <select {% if current_customer_has_card %}disabled{% endif %} class="validate[required,custom[integer]]" name="order[payment_attributes][source_attributes][year]">
+                    <option>--</option>
+                    {% for i in (16..31) %}
+                      <option value={{ i }}>{{ i }}</option>
+                    {% endfor %}
+                  </select>
+                  <span>年</span>
+                </div>
+              </fieldset>
+            </div>
+            <div id="view-input-card-name" style={% if current_customer_has_card %}"display:none;"{% endif %}>
+              <fieldset>
+                <label>カードの名義人<span class="must"> ※ </span></label>
+                <div class="full">
+                  <input {% if current_customer_has_card %}disabled{% endif %} class="validate[required]" name="order[payment_attributes][source_attributes][name]" type="text" placeholder="例）TARO YAMADA" value=''>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <!-- payment info -->
+        
+          <!-- shipping day -->
+          <div id="view-payment-schedule" class="bottom-space-big">
+            <input id="payment_schedule" name="order[subs_order_attributes][payment_schedule]" type="hidden" value="">
+            <input id="scheduled_to_be_delivered_every_x_month" name="order[subs_order_attributes][scheduled_to_be_delivered_every_x_month]" type="hidden" value="">
+            <input id="scheduled_to_be_delivered_on_xth_day" name="order[subs_order_attributes][scheduled_to_be_delivered_on_xth_day]" type="hidden" value="">
+            <input id="scheduled_to_be_delivered_every_x_day" name="order[subs_order_attributes][scheduled_to_be_delivered_every_x_day]" type="hidden" value="">
+            <input id="scheduled_2nd_delivery_date" name="order[subs_order_attributes][scheduled_to_be_delivered_at]" type="hidden" value="">
+            <input id="scheduled_2nd_delivery_time" name="order[subs_order_attributes][scheduled_delivery_time]" type="hidden" value="">
+            <input id="do_not_create_subs_order" name="order[subs_order_attributes][_destroy]" type="hidden" value="1">
+            <input id="scheduled_to_be_delivered_at" type="hidden" value="">
+            <input id="scheduled_to_be_shipped_today" name="order[scheduled_to_be_shipped_today]" type="hidden" value="0">
+            <input id="scheduled_1st_delivery_date" name="order[scheduled_to_be_delivered_at]" type="hidden" value={{ scheduled_to_be_delivered_at }}>
+            <input id="scheduled_1st_delivery_time" name="order[scheduled_delivery_time]" type="hidden" value="">
+            <h3 class="page-sub-title">お届け日の指定</h3>
+            <div id="container_delivery_cycle" style="display:none;">
+              <fieldset>
+                <label>お届け日の指定<span class="must"> ※ </span></label>
+                <div class="full">
+                  <select class="validate[required]" id="select_payment_schedule">
+                    <option value="date" {% if order.subs_order.payment_schedule == 'date' %}selected{% endif %}>日付で指定</option>
+                    <option value="term" {% if order.subs_order.payment_schedule == 'term' %}selected{% endif %}>間隔で指定</option>
+                  </select>
+                </div>
+              </fieldset>
+            </div>
+            <div id="container_delivery_schedule_by_date" style="display:none;">
+              <select class="validate[required]" id="select_scheduled_to_be_delivered_every_x_month">
+                {% for i in (1..12) %}
+                  {% assign a = order.subs_order.scheduled_to_be_delivered_every_x_month %}
+                  {% assign b = i %}
+                  <option value={{ i }} {% if a == b %}selected{% endif %}>{{ i }}ヶ月</option>
+                {% endfor %}
+              </select>
+              <span>おきの</span>
+              <select class="input-sm validate[required]" id="select_scheduled_to_be_delivered_on_xth_day">
+                {% for i in (1..28) %}
+                  {% assign a = order.subs_order.scheduled_to_be_delivered_on_xth_day %}
+                  {% assign b = i %}
+                  <option value={{ i }} {% if a == b %}selected{% endif %}>{{ i }}日</option>
+                {% endfor %}
+              </select>
+              <span>にお届け</span>
+            </div>
+            <div id="container_delivery_schedule_by_term" style="display:none;">
+              <select class="validate[required]" id="select_scheduled_to_be_delivered_at">
+                {% for d in option_scheduled_to_be_delivered_at %}
+                  {% assign a = order.scheduled_to_be_delivered_at | date: "%Y-%m-%d" %}
+                  {% assign b = d | date: "%Y-%m-%d" %}
+                  <option value={{ d }} {% if a == b %}selected{% endif %}>{{ d }}</option>
+                {% endfor %}
+              </select>
+              <span>から</span>
+              <select class="validate[required,custom[integer]]" id="select_scheduled_to_be_delivered_every_x_day" style="height:25px; margin: 5px 0;">
+                {% for d in option_scheduled_to_be_delivered_every_x_day %}
+                  {% assign a = order.subs_order.scheduled_to_be_delivered_every_x_day %}
+                  {% assign b = d %}
+                  <option value={{ d }} {% if a == b %}selected{% endif %}>{{ d }}日</option>
+                {% endfor %}
+              </select>
+              <span>間隔でお届け</span>
+            </div>
+            <div id="container_delivery_schedule_date">
+              <fieldset>
+                <label>お届け日の指定<span class="must"> ※ </span></label>
+                <div class="short">
+                  <select class="validate[required]" id="select_scheduled_to_be_delivered_at">
+                    {% for d in option_scheduled_to_be_delivered_at %}
+                      {% assign a = order.scheduled_to_be_delivered_at | date: "%Y-%m-%d" %}
+                      {% assign b = d | date: "%Y-%m-%d" %}
+                      <option value={{ d }} {% if a == b %}selected{% endif %}>{{ d }}</option>
+                    {% endfor %}
+                  </select>
+                  <span>にお届け</span>
+                </div>
+              </fieldset>
+            </div>
+            <div d="container_delivery_schedule_time">
+              <fieldset>
+                <label>お届け時間</label>
+                <div class="short">
+                  <select class="form-control input-sm" id="select_scheduled_delivery_time"></select>
+                  <span>に配達</span>
+                </div>
+              </fieldset>
+            </div>
+            <div id="container_scheduled_delivery_dates">
+              <fieldset>
+                <label>お届け予定日</label>
+                <div class="short">
+                  <div id="scheduled_1st_delivery_date_text" style="display:none;"></div>
+                  <div id="scheduled_2nd_delivery_date_text" style="display:none;"></div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <!-- shipping day -->
+          <center><a href="/shop/cart" class="margin-bottom-10 block">カートへ戻る</a></center>
+          <center><input type="submit" value="次へ" class="btn btn-black btn-block margin-bottom-20"></center>
+        </form>
+        <!-- form -->
+        </div>
+        <p class="small">当サイトはSSL暗号化通信に対応しております。ご注文内容やクレジットカード番号など、お客様の大切な情報は暗号化して送信されます。第三者から解読できないようになっております。</p>
+      </div>
+    </div>
+  </section>
+</div>

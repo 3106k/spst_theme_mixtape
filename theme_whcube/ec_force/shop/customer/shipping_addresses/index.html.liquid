@@ -1,0 +1,32 @@
+<script src="/assets/shop/customer/shipping_addresses.js"></script>
+<div class="wrap">
+  <section>
+    <div class="inner">
+      <h2 class="page-title">お届け先情報の確認・変更</h2>
+      <h3 class="margin-bottom-10">現在登録されているお届け先</h3>
+      <table class="table-cart margin-bottom-20">
+        <tr>
+          <th>お名前</th>
+          <th>住所</th>
+          <th>電話番号</th>
+          <th></th>
+          <th></th>
+        </tr>
+        {% for shipping_address in shipping_addresses %} 
+          <tr>
+            <td>{{ shipping_address.full_name }}</td>
+            <td>〒 {{ shipping_address.full_zip }} {{ shipping_address.full_address }}</td>
+            <td>{{ shipping_address.full_tel }}</td>
+            <td>
+              <center><a href="/shop/customer/shipping_addresses/{{ shipping_address.id }}/edit" class="refresh">編集</a></center>
+            </td>
+            <td>
+              <center><a href="/shop/customer/shipping_addresses/{{ shipping_address.id }}" data-confirm="本当に削除しますか？" data-method="delete" class="delete">削除</a></center>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+      <center><a class="btn btn-black" href="/shop/customer/shipping_addresses/new">新規登録</a></center>
+    </div>
+  </section>
+</div>

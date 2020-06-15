@@ -7,31 +7,47 @@
 {% endcontent_for %}
 
 {% content_for title %}
-購入履歴一覧｜
+購入履歴一覧｜mixtape
 {% endcontent_for %}
 
-<div class="wrap">
-  <section class="cart">
-    <div class="inner">
-      <h2 class="page-title">購入履歴</h1>
-        {% if orders == empty %}
-          <p>購入履歴はありません。</p>
-        {% else %}
-          <table class="table-cart">
-            <tr class="line">
-              <th>購入日</th>
-              <th>購入番号</th>
-              <th></th>
-            </tr>
-            {% for order in orders %}
-              <tr>
-                <td>{{ order.completed_at | date: '%Y/%m/%d' }}</td>
-                <td>{{ order.number }}</td>
-                <td><center><a class="refresh" href="/shop/customer/orders/{{ order.number }}">詳細</center></td>
-              </tr>
-            {% endfor %}
-          </table>
-        {% endif %}
-    </div>
+<div class="wrap customer">
+  <section>
+    <h1>購入履歴</h1>
+    <ul class="nav nav-mypage">
+      <li class="nav-item ">
+        <a href="/shop/customer/orders" class="active nav-link">購入履歴</a>
+      </li>
+      <li class="nav-item dropdown-overflowx ">
+        <a href="#dropdown-user" class="nav-link js-dropdown-overflowx">会員メニュー</a>
+        <ul class="dropdown-overflowx-menu" id="dropdown-user">
+          <li><a href="/shop/customer/edit" class="dropdown-overflowx-item">会員情報の確認・変更</a></li>
+          <li><a href="/shop/customer/cards" class="dropdown-overflowx-item">クレジットカード情報の確認・変更</a></li>
+          
+        </ul>
+      </li>
+      <li><a href="/shop/customer/password/edit" class="dropdown-overflowx-item">パスワードの変更</a></li>
+      <li class="nav-item sp">
+        <a href="/shop/customers/sign_out" class="nav-link">ログアウト</a>
+      </li>
+    </ul>
+    
+    {% if orders == empty %}
+      <p>購入履歴はありません。</p>
+    {% else %}
+      <table class="table-cart">
+        <tr class="line">
+          <th>購入日</th>
+          <th>購入番号</th>
+          <th></th>
+        </tr>
+        {% for order in orders %}
+          <tr>
+            <td>{{ order.completed_at | date: '%Y/%m/%d' }}</td>
+            <td>{{ order.number }}</td>
+            <td><center><a class="btn btn-black xxs refresh" href="/shop/customer/orders/{{ order.number }}">詳細</center></td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endif %}
   </section>
 </div>

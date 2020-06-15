@@ -1,6 +1,7 @@
 {{ 'shop/orders' | javascript_include_tag }}
 {{ 'shop/amazon_pay' | stylesheet_link_tag }}
 
+
 {% content_for meta_description %}
 description
 {% endcontent_for %}
@@ -13,8 +14,6 @@ keyowrds
 ご注文情報の入力｜mixtape
 {% endcontent_for %}
 
-<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
-<link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
 
 <style>
  header.header {
@@ -41,7 +40,6 @@ keyowrds
 
 <div class="wrap orders">  
   <section>
-    
     <div class="inner">
       <h1 class="h2 mb-2">CHECKOUT</h1>
       
@@ -62,12 +60,9 @@ keyowrds
         </li>
       </ul>
 
-      <form action="/shop/order" method="post">
+
         <div class="form-outer d-flex row-reverse justify-content-between align-items-baseline">
           <div class="bottom-space-big orders_detail">
-            <center>
-              <input type="submit" class="purchase btn btn-black btn-block margin-bottom-20 d-pc-block d-none" value="確認画面へ進む">
-            </center>
             <table class="table-cart mb-0">
               <tr>
                 <th>商品名</th>
@@ -94,7 +89,7 @@ keyowrds
           </div>
           
           
-          <div class="form-box " id="new-view">
+          <div class="form-box" id="new-view">
             <div id="TokenJs"></div>
 
             {% if order.error_messages != empty %}
@@ -107,10 +102,11 @@ keyowrds
             
             <p class="text-center lh-2 mb-3">必要事項を記入してください。<br />
               各項目の入力が終わりましたら「確認画面へ進む」ボタンをクリックしてください。<br />
-              必須項目 「<span class="text-danger"> ※</span> 」印は入力必須項目です。</p>
+              必須項目 「<span class="text-danger">*</span>」印は入力必須項目です。</p>
             
+            <div id="AmazonPayWidgetJs"></div>            
             {% unless customer_signed_in %}
-              <div id="AmazonPayOneClickOrderArea" class="mb-14" style="display: none;">
+              <div id="AmazonPayOneClickOrderArea" class="mb-5" style="display: none;">
                 <div class="amazon_pay_box">
                   <div class="amazon_pay_title">ワンクリックで簡単お申込みする！</div>
                   <div class="amazon_pay_button_wrapper">
@@ -142,9 +138,11 @@ keyowrds
               {% endif %}
             {% endif %}
 
-            
-            <input name="_method" type="hidden" value="put">
-            <input name="order[state]" type="hidden" value="new">
+      <form action="/shop/order" method="post">
+        <input name="_method" type="hidden" value="put">
+        <input name="order[state]" type="hidden" value="new">
+        <input name='register_as_member' type='hidden' value='1'/>
+
 
             <!-- 各入力フォーム部分テンプレート(PC用) -->
             {% include 'ec_force/shop/orders/view_billing_information.html' %}
@@ -172,4 +170,4 @@ keyowrds
       </form>
     </div>
   </section>
-    </div>
+</div>

@@ -11,16 +11,18 @@ mixtape
 {% endcontent_for %}
 
 <div class="wrap">
-  <section class="product_list">
-    <div class="overflow">
-      <ul class="breadcrumb">{% for product_category in product_category.path %}
-        <li><a href='/shop/product_categories/{{ product_category.id }}'>{{ product_category.name }}</a></li>
-      {% endfor %}</ul>
-    </div>
-    <h1 class="h2 text-left">CATEGORY NAME</h1>
-  </section>
-
   <section class="all_item_container">
+    <section>
+    <div class="inner overflow" style="padding-bottom:0px; padding-left:10px;">
+      <ul class="breadcrumb">
+        <li><a href='/'>Home</a></li>
+        {% for product_category in product_category.path %}
+          <li><a href='/shop/product_categories/{{ product_category.id }}'>{{ product_category.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+    <h2 class="h2" style="text-align:left; padding-left:10px;">{{ product_category.name }}</h2>
     
     <ul class="d-flex all_item">
       {% for product in products %}

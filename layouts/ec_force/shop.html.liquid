@@ -21,7 +21,9 @@
   </head>
   <body>
     {{ 'notice' | flash: 'alert alert-success', 'text' }}
-    {{ 'alert' | flash: 'alert alert-danger', 'text' }}
+    {{ 'alert' | flash: 'alert danger', 'text' }}
+    {{ 'error' | flash: 'alert danger', 'text' }}
+    
     <!-- ショップ共通タグ (body 要素の最初に追加) -->
     {{ 'body_prepend' | shop_shared_tag }}
 

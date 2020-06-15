@@ -1,20 +1,16 @@
 <header class="header {% if params['controller'] == 'ec_force/shop/base' %}top{% endif %}">
   <div class="">
     <nav class="nav-mobile">
-      <ul>{% for product_category in product_categories %}{% unless ignore_product_categories contains product_category.name %}
+      <h3>CATEGORY</h3>
+      <ul class="category">{% for product_category in product_categories %}{% unless ignore_product_categories contains product_category.name %}
         <li><a href="/shop/product_categories/{{ product_category.id }}">{{ product_category.name }}</a></li>
       {% endunless %}{% endfor %}</ul>
 
       <ul class="menus">
         <li><a href="/">HOME</a></li>
-        <li>{% if customer_signed_in == false %}<a href="/shop/customers/sign_in">LOGIN</i></a>{% else %}<a href="/shop/customer">MYPAGE</a>{% endif %}</li>
         <li><a href="/shop/pages/aboutus">ABOUT</a></li>
-        <li><a href="/shop/contact">CONTACT</a></li>
-        <li><a href="/shop/law_info">特定商取引法に基づく表示</a></li>
-        <li><a href="/shop/privacy">プライバシーポリシー</a></li>
-        <li><a href="/shop/customer_term">ご利用規約</a></li>
-        <li><a href="#">各ブランド様連絡窓口</a></li>
-        <li><a href="/shop/base_info">運営会社</a></li>
+        <li><a href="/shop/information">BLOG</a></li>
+        <li>{% if customer_signed_in == false %}<a href="/shop/customers/sign_in">LOGIN</i></a>{% else %}<a href="/shop/customer">MYPAGE</a>{% endif %}</li>
       </ul>
     </nav>
     <div class="header-inner-mobile">

@@ -1,0 +1,147 @@
+{{ 'shop/customer/cards' | javascript_include_tag }}
+
+{% content_for meta_description %}
+{% endcontent_for %}
+
+{% content_for meta_keywords %}
+{% endcontent_for %}
+
+{% content_for title %}
+クレジットカード情報一覧|mixtape
+{% endcontent_for %}
+
+<!-- クレジットカード情報一覧/登録画面コンテナ -->
+<div class="wrap customer">
+  <section>
+    <h1>クレジットカード一覧</h1>
+    <ul class="nav nav-mypage">
+      <li class="nav-item ">
+        <a href="/shop/customer/orders" class="nav-link">購入履歴</a>
+      </li>
+      <li class="nav-item dropdown-overflowx ">
+        <a href="#dropdown-user" class="nav-link js-dropdown-overflowx">会員メニュー</a>
+        <ul class="dropdown-overflowx-menu" id="dropdown-user">
+          <li><a href="/shop/customer/edit" class="dropdown-overflowx-item">会員情報の確認・変更</a></li>
+          <li><a href="/shop/customer/cards" class="dropdown-overflowx-item">クレジットカード情報の確認・変更</a></li>
+          
+        </ul>
+      </li>
+      <li><a href="/shop/customer/password/edit" class="dropdown-overflowx-item">パスワードの変更</a></li>
+      <li class="nav-item sp">
+        <a href="/shop/customers/sign_out" class="nav-link">ログアウト</a>
+      </li>
+    </ul>
+    
+    <div class="form-box">
+      <div id="customers-card-index-view">
+        <div id="TokenJs"></div>
+
+        <!-- フラッシュメッセージ -->
+        {{ 'notice' | flash: 'alert alert-success', 'text' }}
+        {{ 'alert' | flash: 'alert alert-danger', 'text' }}
+        {{ 'error' | flash: 'alert alert-danger', 'text' }}
+
+        <!-- クレジットカード一覧 -->
+        {% if current_customer.credit_cards.size <= 0 %}
+          現在登録されているクレジットカードはありません。
+        {% else %}
+          カードは５枚まで登録することができます。
+
+          <!-- 定期支払い方法が変更できる設定の場合もしくはクレジットカードの変更が許可されていない場合 -->
+          {% if base_info.payment_method_changeable_on_mypage? or !base_info.credit_card_editable? %}
+            ※定期受注への反映は
+            <a href="/shop/customer/subs_orders">こちら</a>
+          {% endif %}
+
+          {% for card in cards %}
+
+            <!-- カード番号[下4桁表示]（月/年） -->
+            {{ card.display_number }}
+
+            <!-- カード番号[下4桁表示] -->
+            {{ card.last_digits }}
+
+            <!-- 有効期限（月） -->
+            {{ card.month }}
+
+            <!-- 有効期限（年） -->
+            {{ card.year }}
+
+            <!-- デフォルト -->
+            {% if card.default %}◯{% else %}-{% endif %}
+
+            <!-- 登録日 -->
+            {{ card.created_at | date: "%Y/%m/%d %H:%M" }}
+
+            <!-- 更新日 -->
+            {{ card.updated_at | date: "%Y/%m/%d %H:%M" }}
+
+            <!-- 操作 -->
+            <a href="/shop/customer/cards/{{ card.id }}/edit">編集</a>
+            <a data-confirm="本当に削除しますか？" rel="nofollow" data-method="delete" href="/shop/customer/cards/{{ card.id }}">削除</a>
+
+          {% endfor %}
+        {% endif %}
+
+        <!-- クレジットカード新規登録 -->
+        {% if current_customer.credit_cards.size < 5 %}
+
+          <!-- 登録フォーム -->
+          <form action="/shop/customer/cards" id="new-card" method="post">
+            {% csrf_meta_tags %}
+            <input id="access-token" name="card[access_token]" type="hidden" value="">
+            <input id="gateway-card-seq" name="card[gateway_card_seq]" type="hidden" value="">
+
+            <!-- カード番号 -->
+            <label for="number">カード番号</label>
+            <input class="validate[required,custom[integer],maxSize[16]]" id="number" name="card[number]">
+
+            <!-- カード有効期限 -->
+            <label for="month">カード有効期限</label>
+            <select class="validate[required]" id="month" name="card[month]">
+              <option value="">--</option>
+              {% for m in (1..12) %}
+                <option value='{{ m }}'>{{ m }}</option>
+              {% endfor %}
+            </select>
+            月
+            <select class="validate[required]" id="year" name="card[year]">
+              <option value="">--</option>
+              {% assign now_year = "now" | date: "%Y" | minus: 2000 %}
+              {% assign later_15_years = "now" | date: "%Y" | plus: 15 | minus: 2000 %}
+              {% for y in (now_year..later_15_years) %}
+                <option value='{{ y }}'>{{ y }}</option>
+              {% endfor %}
+            </select>
+            年
+
+            <!-- カード名義 -->
+            <label for="name">カード名義</label>
+            <input class="validate[required,custom[onlyLetterSp]]" id="name" name="card[name]">
+
+            <!-- セキュリティコード -->
+            <div id="view-input-card-cvv" style="display: none;">
+              <label for="name">セキュリティコード</label>
+              <input class="validate[required]" id="cvv" name="cvv">
+            </div>
+
+            <!-- デフォルト -->
+            <label for="default">デフォルト</label>
+            {% if cards.size == 0 %}
+              <input type='checkbox' checked disabled>
+              <input type="hidden" name='card[default]' id='default' value="1">
+            {% else %}
+              <input type="hidden" name='card[default]' id='default' value="0">
+              <input type='checkbox' name="card[default]" id="default">
+            {% endif %}
+
+            <!-- 送信リンク -->
+            <button id="submit" type="submit">カード情報を登録</button>
+
+          </form>
+        {% endif %}
+
+      </div>
+    </div>
+  </section>
+</div>

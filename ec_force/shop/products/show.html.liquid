@@ -99,18 +99,21 @@
  {% if base_info.use_related_products_on_detail? and product.active_related_products.size != 0 %}
    <section>
      <div class="inner overflow">
-       <h2 class="h4 page-title text-center">- おすすめアイテム -</h2>
+       <h2 class="h4 page-title text-center">RECOMMEND</h2>
        <div class="thin-img product-recommend">
          
-         <!-- 関連商品一覧 -->
          {% for related_product in product.active_related_products %}
-           <div>
+           <div class="item">
              <a href="/shop/products/{{ related_product.master.sku }}">
                {% if related_product.thumbnail.url %}{% assign src = related_product.thumbnail.url %}{% else %}{% assign src = 'missing' | image_url %}{% endif %}
                <img src="{{ src }}" class="img-max" alt="{{ related_product.name | truncate: 35 }}" />
              </a>
              <h3>{{ related_product.name | truncate: 35 }}</h3>
-             <p class="price">¥ {{ related_product.master.list_price | number_to_currency: format: '%n' }} <span class="discount">(15%OFF)</span></p>
+             {% if related_product.variants[0].list_price %}{%if related_product.variants[0].list_price != related_product.first_price %}{% assign first_price = related_product.variants[0].list_price | round:2 %}{% assign price = related_product.first_price | divided_by: first_price %}{% assign price = 1 | minus: price | times: 100 %}{% assign price = price | round%}
+               <p class="price sale">¥ {{ related_product.first_price | number_to_currency: format: '%n' }} <span class="discount">({{ price }}%OFF)</span</p>
+             {% else %}<p class="price">¥ {{ related_product.first_price | number_to_currency: format: '%n' }}</p>{% endif %}{% else %}
+               <p class="price">¥ {{ related_product.first_price | times: tax | plus: related_product.first_price | number_to_currency: format: '%n' }}</p>
+             {% endif %}
            </div>
          {% endfor %}
        </div>

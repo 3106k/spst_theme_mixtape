@@ -1,7 +1,6 @@
 {{ 'shop/orders' | javascript_include_tag }}
 {{ 'shop/amazon_pay' | stylesheet_link_tag }}
 
-
 {% content_for meta_description %}
 description
 {% endcontent_for %}
@@ -27,6 +26,9 @@ keyowrds
    display: none;
  }
  footer .footer-inner {
+   display: none;
+ }
+ .alert.campaign {
    display: none;
  }
 </style>

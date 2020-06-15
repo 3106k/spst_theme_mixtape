@@ -8,7 +8,7 @@
 {% endcontent_for %}
 
 {% content_for title %}
-カート | 
+カート | mixtape
 {% endcontent_for %}
 
 <style>
@@ -27,14 +27,11 @@
  }
 </style>
 
-{{ 'notice' | flash: 'alert alert-success', 'text' }}
-{{ 'alert' | flash: 'alert alert-danger', 'text' }}
-
 <header class="header orders">
   <a href="/"><img src="https://ec-force.s3.amazonaws.com/mixtapetokyo/uploads/img/mixtape_logo_Black.png" alt="mixtape" class="logo-pc"></a>
 </header>
 
-<div class="wrap orders pb-10" id="cart-show-view">
+<div class="wrap orders cart" id="cart-show-view">
   <!-- cart mobile & ipad -->
 
   <section class="cart">
@@ -45,6 +42,14 @@
         {% if order.order_items.size == 0 %}
           <p class="text-center mb-2">カートの中には何も入っていません</p>
         {% else %}
+
+          {% if order.subtotal < 10000 %}
+            {% assign more = 10000 | minus: order.subtotal %}
+            <div class="shipping_campaign">
+              <p>あと<span class="bold">{{ more | number_to_currency}}</span>のご購入で<span class="text-primary bold">送料無料</span></p>
+            </div>
+          {% endif %}
+            
           {% for order_item in order.order_items %}
             
             <div class="cart-box">
@@ -71,11 +76,11 @@
                         <input type="number" name="quantity" class="margin-right-5 form-control w-50" value="{{ order_item.quantity }}" size="4" maxlength="3" min=0>
 
                         <span class="margin-right-10">個</span>
-                        <input type="submit" value="変更" name="QUANTITY" class="refresh">
+                        <input type="submit" value="変更" name="QUANTITY" class="refresh btn btn-black xs">
                       </form>
                     </div>
                     <div class="text-right">
-                      <input type="submit" value="x 削除" onclick="location.href='/shop/cart/delete?variant_id={{ order_item.variant_id }}';" class="delete pc">
+                      <input type="submit" value="x 削除" onclick="location.href='/shop/cart/delete?variant_id={{ order_item.variant_id }}';" class="delete pc btn xs white">
                     </div>
                   </div>
                 </div>
@@ -92,9 +97,31 @@
         <div>
           <a href="/shop" class="btn btn-black-reverse btn-block">買い物を続ける</a>
         </div>
-        
       </div>
     </div>
+    {% if order.order_items.size > 0 %}
+      <div class="recommend all_item_container pt-2 pb-1 mb-0">
+        <h2 class="h2">RECOMMEND</h2>
+        <div class="slider-popular">
+          {% for order_item in order.order_items %}
+            {% for related_product in order_item.product.active_related_products %}
+              <div class="item">
+                <a href="/shop/products/{{ related_product.master.sku }}">
+                  {% if related_product.thumbnail.url %}{% assign src = related_product.thumbnail.url %}{% else %}{% assign src = 'missing' | image_url %}{% endif %}
+                  <img src="{{ src }}" class="img-max" alt="{{ related_product.name | truncate: 35 }}" />
+                </a>
+                <h3>{{ related_product.name | truncate: 35 }}</h3>
+                {% if related_product.variants[0].list_price %}{%if related_product.variants[0].list_price != related_product.first_price %}{% assign first_price = related_product.variants[0].list_price | round:2 %}{% assign price = related_product.first_price | divided_by: first_price %}{% assign price = 1 | minus: price | times: 100 %}{% assign price = price | round%}
+                  <p class="price sale">¥ {{ related_product.first_price | number_to_currency: format: '%n' }} <span class="discount">({{ price }}%OFF)</span</p>
+                {% else %}<p class="price">¥ {{ related_product.first_price | number_to_currency: format: '%n' }}</p>{% endif %}{% else %}
+                  <p class="price">¥ {{ related_product.first_price | times: tax | plus: related_product.first_price | number_to_currency: format: '%n' }}</p>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
   </section>
 </div>
 

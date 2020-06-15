@@ -19,7 +19,7 @@
         <a href="/shop/customer/orders" class="nav-link">購入履歴</a>
       </li>
       <li class="nav-item dropdown-overflowx ">
-        <a href="#dropdown-user" class="nav-link js-dropdown-overflowx">会員メニュー</a>
+        <a href="#dropdown-user" class="nav-link js-dropdown-overflowx active">会員メニュー</a>
         <ul class="dropdown-overflowx-menu" id="dropdown-user">
           <li><a href="/shop/customer/edit" class="dropdown-overflowx-item">会員情報の確認・変更</a></li>
           <li><a href="/shop/customer/cards" class="dropdown-overflowx-item">クレジットカード情報の確認・変更</a></li>
@@ -43,10 +43,9 @@
 
         <!-- クレジットカード一覧 -->
         {% if current_customer.credit_cards.size <= 0 %}
-          現在登録されているクレジットカードはありません。
+          <p class="text-center mb-2">現在登録されているクレジットカードはありません。</p>
         {% else %}
           カードは５枚まで登録することができます。
-
           <!-- 定期支払い方法が変更できる設定の場合もしくはクレジットカードの変更が許可されていない場合 -->
           {% if base_info.payment_method_changeable_on_mypage? or !base_info.credit_card_editable? %}
             ※定期受注への反映は
@@ -92,55 +91,76 @@
             <input id="access-token" name="card[access_token]" type="hidden" value="">
             <input id="gateway-card-seq" name="card[gateway_card_seq]" type="hidden" value="">
 
-            <!-- カード番号 -->
-            <label for="number">カード番号</label>
-            <input class="validate[required,custom[integer],maxSize[16]]" id="number" name="card[number]">
+            <fieldset>
+              <label for="number">カード番号</label>
+              <div class="full">
+                <input type="text" class="validate[required,custom[integer],maxSize[16]]" id="number" name="card[number]">
+              </div>
+            </fieldset>
 
-            <!-- カード有効期限 -->
-            <label for="month">カード有効期限</label>
-            <select class="validate[required]" id="month" name="card[month]">
-              <option value="">--</option>
-              {% for m in (1..12) %}
-                <option value='{{ m }}'>{{ m }}</option>
-              {% endfor %}
-            </select>
-            月
-            <select class="validate[required]" id="year" name="card[year]">
-              <option value="">--</option>
-              {% assign now_year = "now" | date: "%Y" | minus: 2000 %}
-              {% assign later_15_years = "now" | date: "%Y" | plus: 15 | minus: 2000 %}
-              {% for y in (now_year..later_15_years) %}
-                <option value='{{ y }}'>{{ y }}</option>
-              {% endfor %}
-            </select>
-            年
+            <fieldset>
+              <label for="month">カード有効期限</label>
+              <div class="birth align-items-center">
+                <div class="custom-select">   
+                  <select class="validate[required]" id="month" name="card[month]">
+                    <option value="">--</option>
+                    {% for m in (1..12) %}
+                      <option value='{{ m }}'>{{ m }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <span class="mx-1">月</span>
+                <div class="custom-select">
+                  <select class="validate[required]" id="year" name="card[year]">
+                    <option value="">--</option>
+                    {% assign now_year = "now" | date: "%Y" | minus: 2000 %}
+                    {% assign later_15_years = "now" | date: "%Y" | plus: 15 | minus: 2000 %}
+                    {% for y in (now_year..later_15_years) %}
+                      <option value='{{ y }}'>{{ y }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <span class="mx-1">年</span>
+              </div>
+            </fieldset>
 
-            <!-- カード名義 -->
-            <label for="name">カード名義</label>
-            <input class="validate[required,custom[onlyLetterSp]]" id="name" name="card[name]">
+            <fieldset>
+              <label for="name">カード名義</label>
+              <div class="full">
+                <input type="text" class="validate[required,custom[onlyLetterSp]]" id="name" name="card[name]">
+              </div>
+            </fieldset>
+
 
             <!-- セキュリティコード -->
             <div id="view-input-card-cvv" style="display: none;">
-              <label for="name">セキュリティコード</label>
-              <input class="validate[required]" id="cvv" name="cvv">
+              <fieldset>
+                <label for="name">セキュリティコード</label>
+                <div class="shirt">
+                  <input class="validate[required]" id="cvv" name="cvv">
+                </div>
+              </fieldset>
             </div>
 
-            <!-- デフォルト -->
-            <label for="default">デフォルト</label>
-            {% if cards.size == 0 %}
-              <input type='checkbox' checked disabled>
-              <input type="hidden" name='card[default]' id='default' value="1">
-            {% else %}
-              <input type="hidden" name='card[default]' id='default' value="0">
-              <input type='checkbox' name="card[default]" id="default">
-            {% endif %}
+            <fieldset>
+              <label for="default">デフォルト</label>
+              <div class="birth align-items-center pl-1">
+              {% if cards.size == 0 %}
+                <input type='checkbox' checked>
+                <input type="hidden" name='card[default]' id='default' value="1">
+              {% else %}
+                <input type="hidden" name='card[default]' id='default' value="0">
+                <input type='checkbox' name="card[default]" id="default">
+              {% endif %}
+              デフォルト登録をする
+              </div>
+            </fieldset>
 
-            <!-- 送信リンク -->
-            <button id="submit" type="submit">カード情報を登録</button>
-
+            <center>
+              <button class="btn btn-black md" id="submit" type="submit">カード情報を登録</button>
+            </center>
           </form>
         {% endif %}
-
       </div>
     </div>
   </section>

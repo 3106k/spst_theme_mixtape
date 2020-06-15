@@ -1,3 +1,6 @@
+<div class="alert campaign">
+  <p>10,000円以上ご購入で<span class="big">送料無料</span>
+</div>
 <header class="header {% if params['controller'] == 'ec_force/shop/base' %}top{% endif %}">
   <div class="">
     <nav class="nav-mobile">
@@ -10,7 +13,7 @@
         <li><a href="/">HOME</a></li>
         <li><a href="/shop/pages/aboutus">ABOUT</a></li>
         <li><a href="/shop/information">BLOG</a></li>
-        <li>{% if customer_signed_in == false %}<a href="/shop/customers/sign_in">LOGIN</i></a>{% else %}<a href="/shop/customer">MYPAGE</a>{% endif %}</li>
+        <li>{% if customer_signed_in == false %}<a href="/shop/customers/sign_in">LOGIN</i></a>{% else %}<a href="/shop/customer/orders">MYPAGE</a>{% endif %}</li>
       </ul>
     </nav>
     <div class="header-inner-mobile">

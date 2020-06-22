@@ -1,18 +1,26 @@
+{{ 'shop/customers/passwords' | javascript_include_tag }}
+
+{% content_for meta_description %}mixtapeは10代~20代のユニセックス向けアパレルブランドのオンラインショップです。スポーツMIXファッションを中心に豊富なアイテムを取り揃えております。{% endcontent_for %}
+
+{% content_for meta_keywords %}mixtape,アパレル,ファッション,スポーツMIX{% endcontent_for %}
+
+{% content_for title %}パスワードリセット | ユニセックス向けスポーツMIXファッションブランド mixtape (ミックステープ){% endcontent_for %}
+
 <link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.jquery.css" type="text/css">
 <link rel="stylesheet" href="{{ file_root_path }}/css/validationEngine.custom.css" type="text/css">
-<script src="/assets/shop/customers/passwords.js"></script>
-<div class="wrap">
+
+<div class="wrap about">
   <!-- reset -->
-  <section id="customers-password-new-view">
+  <section id="customers-password-new-view ">
     <form class="simple_form form-horizontal" novalidate="novalidate" id="new_customer" action="/shop/customers/password" accept-charset="UTF-8" method="post">
       <div class="inner text-center">
-        <h2 class="page-title">パスワードリセット</h1>
-        <div class="form-box">
-          <p class="margin-bottom-10">メールアドレスを入力してください。<br>パスワードリセットの専用 URL を送信いたします。</p>
-          <input class="validate[required,custom[email]] margin-bottom-10" placeholder="例）yamada@example.co.jp" type="email" name="customer[email]" id="customer_email">
-          <a href="/shop/customers/sign_in" class="margin-bottom-10 block">ログインはこちら</a>
-          <input type="submit" name="commit" class="btn btn-black" value="リセットメールを送信">
-        </div>
+        <h1 class="h2">Password reset</h1>
+          <div class="form-box">
+            <p class="margin-bottom-10">メールアドレスを入力してください。<br>パスワードリセットの専用 URL を送信いたします。</p>
+            <input class="validate[required,custom[email]] margin-bottom-10" placeholder="例）yamada@example.co.jp" type="email" name="customer[email]" id="customer_email">
+            <a href="/shop/customers/sign_in" class="margin-bottom-10 block">ログインはこちら</a>
+            <input type="submit" name="commit" class="btn btn-black" value="リセットメールを送信">
+          </div>
       </div>
     </form>
   </section>

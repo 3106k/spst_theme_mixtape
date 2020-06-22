@@ -1,24 +1,18 @@
 {{ 'shop/customers/sessions' | javascript_include_tag }}
 
-{% content_for meta_description %}
-【公式】mixtape
-{% endcontent_for %}
+{% content_for meta_description %}mixtapeは10代~20代のユニセックス向けアパレルブランドのオンラインショップです。スポーツMIXファッションを中心に豊富なアイテムを取り揃えております。{% endcontent_for %}
 
-{% content_for meta_keywords %}
-mixtape,スキンケア,コスメ
-{% endcontent_for %}
+{% content_for meta_keywords %}mixtape,スキンケア,コスメ{% endcontent_for %}
 
-{% content_for title %}
-mixtape
-{% endcontent_for %}
+{% content_for title %}ログイン | ユニセックス向けスポーツMIXファッションブランド mixtape (ミックステープ){% endcontent_for %}
 
 
 <div class="wrap about">
-
   <section id="customers-sessions-sign-in-view">
     <form action="/shop/customers/sign_in" method="post">
+      {% csrf_meta_tags %}
       <div class="inner text-center">
-        <h2 class="h2 mb-2 page-title">LOGIN</h1>
+        <h1 class="h2 mb-2 page-title">LOGIN</h1>
         <div class="form-box">
           <input type="email" name="customer[email]" class="form-control validate[required] margin-bottom-10" placeholder="メールアドレス">
           <input type="password" name="customer[password]" class="form-control validate[required] margin-bottom-10" placeholder="パスワード">
@@ -29,6 +23,13 @@ mixtape
         </div>
       </div>
     </form>
+
+    {% if line_settings['display_btn'] == '1' and encrypted_line_id == nil %}
+      <!-- LINE ID 説明ポップアップ -->
+      {{ line_settings['information_context'] }}
+      <!-- LINE ID 連携ボタン（リンク） -->
+      <a class="line-token-set-btn" href="#">LINE ID 連携</a>
+    {% endif %}
   </section>
 
 </div>

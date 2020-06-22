@@ -1,18 +1,11 @@
 {{ 'shop/orders' | javascript_include_tag }}
 {{ 'shop/amazon_pay' | stylesheet_link_tag }}
 
-{% content_for meta_description %}
-description
-{% endcontent_for %}
+{% content_for meta_description %}mixtapeは10代~20代のユニセックス向けアパレルブランドのオンラインショップです。スポーツMIXファッションを中心に豊富なアイテムを取り揃えております。{% endcontent_for %}
 
-{% content_for meta_keywords %}
-keyowrds
-{% endcontent_for %}
+{% content_for meta_keywords %}mixtape,アパレル,ファッション,スポーツMIX{% endcontent_for %}
 
-{% content_for title %}
-ご注文情報の入力｜mixtape
-{% endcontent_for %}
-
+{% content_for title %}ご注文情報の入力｜ユニセックス向けスポーツMIXファッションブランド mixtape (ミックステープ){% endcontent_for %}
 
 <style>
  header.header {
@@ -37,7 +30,7 @@ keyowrds
 {{ 'alert' | flash: 'alert danger', 'text' }}
 
 <header class="header orders">
-  <a href="/"><img src="https://ec-force.s3.amazonaws.com/mixtapetokyo/uploads/img/mixtape_logo_Black.png" alt="mixtape" class="logo-pc"></a>
+  <a href="/"><img src="https://ec-force.s3.amazonaws.com/mixtapetokyo/uploads/img/mixtape_logo_Black.png" alt="ユニセックス向けスポーツMIXファッションブランド mixtape (ミックステープ)" class="logo-pc"></a>
 </header>
 
 <div class="wrap orders">  
@@ -102,7 +95,9 @@ keyowrds
               </div>
             {% endif %}
             
-            <p class="text-center lh-2 mb-3">必要事項を記入してください。<br />
+            <p class="text-center lh-2 mb-3">既にアカウントをお持ちの方は<a href="/shop/customers/sign_in?customer_return_to=%2Fshop%2Forder%2Fnew" class="text-primary">こちら</a></p>
+            <p class="text-center lh-2 mb-3">
+              必要事項を記入してください。<br />
               各項目の入力が終わりましたら「確認画面へ進む」ボタンをクリックしてください。<br />
               必須項目 「<span class="text-danger">*</span>」印は入力必須項目です。</p>
             

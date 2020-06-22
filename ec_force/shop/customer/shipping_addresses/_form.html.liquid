@@ -1,107 +1,109 @@
-        <div class="form-box">
-          <p class="text-center lh-2 mb-3">
-            「<span class="text-danger">*</span>」印は入力必須項目です。
-          </p> 
-          <fieldset>
-            <label>お名前<span class="text-danger">*</span></label>
-            {% if shop_form_settings['name_1_field'] %}
-            <div class="full">
-              <input class="validate[required]" placeholder="例）山田 花子" type="text" value="{{ shipping_address.full_name }}" name="address_customer_shipping[name01]" id="address_customer_shipping_name01" data-prompt-position="topLeft">
-            </div>
-            {% else %}
-            <div class="short">
-              <input class="validate[required]" value="{{ shipping_address.name01 }}" maxlength="32" size="15" placeholder="例）山田" type="text" name="address_customer_shipping[name01]" id="address_customer_shipping_name01" data-prompt-position="topLeft">
-              <input class="validate[required]" value="{{ shipping_address.name02 }}" size="15" placeholder="例）花子" type="text" name="address_customer_shipping[name02]" id="address_customer_shipping_name02" data-prompt-position="topLeft">
-            </div>
-            {% endif %}
-          </fieldset>
-          <fieldset>
-            <label>フリガナ<span class="text-danger">*</span></label>
-            {% if shop_form_settings['kana_1_field'] %}
-            <div class="full">
-              <input class="validate[required, custom[katakana]]" placeholder="例）ヤマダ ハナコ" type="text" value="{{ shipping_address.full_kana }}" name="address_customer_shipping[kana01]" id="address_customer_shipping_kana01" data-prompt-position="topLeft">
-            </div>
-            {% else %}
-            <div class="short">
-              <input class="validate[required]" value="{{ shipping_address.kana01 }}" maxlength="32" size="15" placeholder="例）ヤマダ" type="text" name="address_customer_shipping[kana01]" id="address_customer_shipping_kana01" data-prompt-position="topLeft">
-              <input class="validate[required]" value="{{ shipping_address.kana02 }}" size="15" placeholder="例）ハナコ" type="text" name="address_customer_shipping[kana02]" id="address_customer_shipping_kana02" data-prompt-position="topLeft">
-            </div>
-            {% endif %}
-          </fieldset>
-          <fieldset>
-            <label>郵便番号<span class="text-danger">*</span></label>
-            {% if shop_form_settings['zip_1_field'] %}
-            <div class="full">
-              <input class="form-control input-sm validate[required,custom[integer]]" placeholder="例）1234567" type="text" value="{{ shipping_address.full_zip }}" name="address_customer_shipping[zip01]" id="address_customer_shipping_zip01" data-prompt-position="topLeft">
-            </div>
-            {% else %}
-            <div class="short">
-              <input class="validate[required]" value="{{ shipping_address.zip01 }}" size="5" placeholder="例）100" type="text" name="address_customer_shipping[zip01]" id="address_customer_shipping_zip01" data-prompt-position="topLeft">
-              <span>-</span>
-              <input class="validate[required]" value="{{ shipping_address.zip02 }}" size="6" placeholder="例）0000" type="text" name="address_customer_shipping[zip02]" id="address_customer_shipping_zip02" data-prompt-position="topLeft">
-            </div>
-            {% endif %}
-          </fieldset>
-          <fieldset>
-            <label>都道府県<span class="text-danger">*</span></label>
-            <div class="full">
-              <select class="form-control input-sm validate[required]" name="address_customer_shipping[prefecture_name]" id="address_customer_shipping_prefecture_name" data-prompt-position="topLeft">
-                <option value="">選択してください</option>
-                {% for prefecture in prefectures %}
-                  {% if shipping_address.prefecture.id == prefecture.id %}
-                    <option value={{ prefecture.name }} selected>{{ prefecture.name }}</option>
-                      {% else %}
-                    <option value={{ prefecture.name }}>{{ prefecture.name }}</option>
-                  {% endif %}
-                {% endfor %}
-              </select>
-            </div>
-          </fieldset>
-          <fieldset>
-            <label>市郡区/町・村<span class="text-danger">*</span></label>
-            <div class="full">
-              <input class="validate[required] margin-bottom-5" value="{{ shipping_address.addr01 }}" placeholder="例）新宿区" size="50" type="text" name="address_customer_shipping[addr01]" id="address_customer_shipping_addr01" data-prompt-position="topLeft">
-              <p class="small">※番地が抜けていないかご確認ください。</p>
-            </div>
-          </fieldset>
-          <fieldset>
-            <label>丁目・番地・マンション名・号室<span class="text-danger">*</span></label>
-            <div class="full">
-              <input class="validate[required]" value="{{ shipping_address.addr02 }}" placeholder="例）西新宿マンション 204" size="50" type="text" name="address_customer_shipping[addr02]" id="address_customer_shipping_addr02" data-prompt-position="topLeft">
-            </div>
-          </fieldset>
-          <fieldset>
-            <label>電話番号<span class="text-danger">*</span></label>
-            {% if shop_form_settings['tel_1_field'] %}
-            <div class="full">
-              <input class="validate[required,custom[integer]]" placeholder="例）09012345678" type="text" value="{{ shipping_address.full_tel }}" name="address_customer_shipping[tel01]" id="address_customer_shipping_tel01" data-prompt-position="topLeft">
-            </div>
-            {% else %}
-            <div class="phone">
-              <input class="validate[required]" value="{{ shipping_address.tel01 }}" placeholder="例）090" size="5" type="text" name="address_customer_shipping[tel01]" id="address_customer_shipping_tel01" data-prompt-position="topLeft">
-              <span>-</span>
-              <input class="validate[required]" value="{{ shipping_address.tel02 }}" placeholder="例）1234" size="5" type="text" name="address_customer_shipping[tel02]" id="address_customer_shipping_tel02" data-prompt-position="topLeft">
-              <span>-</span>
-              <input class="validate[required]" value="{{ shipping_address.tel03 }}" placeholder="例）5678" size="5" type="text" name="address_customer_shipping[tel03]" id="address_customer_shipping_tel03" data-prompt-position="topLeft">
-            </div>
-            {% endif %}
-          </fieldset>
-          <fieldset>
-            <label>FAX 番号</label>
-            {% if shop_form_settings['fax_1_field'] %}
-            <div class="full">
-              <input class="" placeholder="例）0362775504" type="text" value="{{ shipping_address.full_fax }}" name="address_customer_shipping[fax01]" id="address_customer_shipping_fax01" data-prompt-position="topLeft">
-            </div>
-            {% else %}
-            <div class="phone">
-              <input value="{{ shipping_address.fax01 }}" placeholder="例）03" size="5" type="text" name="address_customer_shipping[fax01]" id="address_customer_shipping_fax01" data-prompt-position="topLeft">
-              <span>-</span>
-              <input value="{{ shipping_address.fax02 }}" placeholder="例）0000" size="5" type="text" name="address_customer_shipping[fax02]" id="address_customer_shipping_fax02" data-prompt-position="topLeft">
-              <span>-</span>
-              <input value="{{ shipping_address.fax03 }}" placeholder="例）0000" size="5" type="text" name="address_customer_shipping[fax03]" id="address_customer_shipping_fax03" data-prompt-position="topLeft">
-            </div>
-            {% endif %}
-          </fieldset>
-          <center><input type="submit" name="commit" value="保存する" class="btn btn-black mb-2">
-          <center><a href="/shop/customer/shipping_addresses" class="margin-bottom-5">戻る</a></center>
-        </div>
+<div class="form-box">
+  <p class="text-center lh-2 mb-3">
+    「<span class="text-danger">*</span>」印は入力必須項目です。
+  </p> 
+  <fieldset>
+    <label>お名前<span class="text-danger">*</span></label>
+    {% if shop_form_settings['name_1_field'] %}
+      <div class="full">
+        <input class="validate[required]" placeholder="例）山田 花子" type="text" value="{{ shipping_address.full_name }}" name="address_customer_shipping[name01]" id="address_customer_shipping_name01" data-prompt-position="topLeft">
+      </div>
+    {% else %}
+      <div class="short">
+        <input class="validate[required]" value="{{ shipping_address.name01 }}" maxlength="32" size="15" placeholder="例）山田" type="text" name="address_customer_shipping[name01]" id="address_customer_shipping_name01" data-prompt-position="topLeft">
+        <input class="validate[required]" value="{{ shipping_address.name02 }}" size="15" placeholder="例）花子" type="text" name="address_customer_shipping[name02]" id="address_customer_shipping_name02" data-prompt-position="topLeft">
+      </div>
+    {% endif %}
+  </fieldset>
+  <fieldset>
+    <label>フリガナ<span class="text-danger">*</span></label>
+    {% if shop_form_settings['kana_1_field'] %}
+      <div class="full">
+        <input class="validate[required, custom[katakana]]" placeholder="例）ヤマダ ハナコ" type="text" value="{{ shipping_address.full_kana }}" name="address_customer_shipping[kana01]" id="address_customer_shipping_kana01" data-prompt-position="topLeft">
+      </div>
+    {% else %}
+      <div class="short">
+        <input class="validate[required]" value="{{ shipping_address.kana01 }}" maxlength="32" size="15" placeholder="例）ヤマダ" type="text" name="address_customer_shipping[kana01]" id="address_customer_shipping_kana01" data-prompt-position="topLeft">
+        <input class="validate[required]" value="{{ shipping_address.kana02 }}" size="15" placeholder="例）ハナコ" type="text" name="address_customer_shipping[kana02]" id="address_customer_shipping_kana02" data-prompt-position="topLeft">
+      </div>
+    {% endif %}
+  </fieldset>
+  <fieldset>
+    <label>郵便番号<span class="text-danger">*</span></label>
+    {% if shop_form_settings['zip_1_field'] %}
+      <div class="full">
+        <input class="form-control input-sm validate[required,custom[integer]]" placeholder="例）1234567" type="text" value="{{ shipping_address.full_zip }}" name="address_customer_shipping[zip01]" id="address_customer_shipping_zip01" data-prompt-position="topLeft">
+      </div>
+    {% else %}
+      <div class="short">
+        <input class="validate[required]" value="{{ shipping_address.zip01 }}" size="5" placeholder="例）100" type="text" name="address_customer_shipping[zip01]" id="address_customer_shipping_zip01" data-prompt-position="topLeft">
+        <span>-</span>
+        <input class="validate[required]" value="{{ shipping_address.zip02 }}" size="6" placeholder="例）0000" type="text" name="address_customer_shipping[zip02]" id="address_customer_shipping_zip02" data-prompt-position="topLeft">
+      </div>
+    {% endif %}
+  </fieldset>
+  <fieldset>
+    <label>都道府県<span class="text-danger">*</span></label>
+    <div class="full custom-select">
+      <select class="form-control input-sm validate[required]" name="address_customer_shipping[prefecture_name]" id="address_customer_shipping_prefecture_name" data-prompt-position="topLeft">
+        <option value="">選択してください</option>
+        {% for prefecture in prefectures %}
+          {% if shipping_address.prefecture.id == prefecture.id %}
+            <option value={{ prefecture.name }} selected>{{ prefecture.name }}</option>
+          {% else %}
+            <option value={{ prefecture.name }}>{{ prefecture.name }}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+    </div>
+  </fieldset>
+  <fieldset>
+    <label>市郡区/町・村<span class="text-danger">*</span></label>
+    <div class="full">
+      <input class="validate[required] margin-bottom-5" value="{{ shipping_address.addr01 }}" placeholder="例）新宿区" size="50" type="text" name="address_customer_shipping[addr01]" id="address_customer_shipping_addr01" data-prompt-position="topLeft">
+      <p class="small">※番地が抜けていないかご確認ください。</p>
+    </div>
+  </fieldset>
+  <fieldset>
+    <label>丁目・番地・マンション名・号室<span class="text-danger">*</span></label>
+    <div class="full">
+      <input class="validate[required]" value="{{ shipping_address.addr02 }}" placeholder="例）西新宿マンション 204" size="50" type="text" name="address_customer_shipping[addr02]" id="address_customer_shipping_addr02" data-prompt-position="topLeft">
+    </div>
+  </fieldset>
+  <fieldset>
+    <label>電話番号<span class="text-danger">*</span></label>
+    {% if shop_form_settings['tel_1_field'] %}
+      <div class="full">
+        <input class="validate[required,custom[integer]]" placeholder="例）09012345678" type="text" value="{{ shipping_address.full_tel }}" name="address_customer_shipping[tel01]" id="address_customer_shipping_tel01" data-prompt-position="topLeft">
+      </div>
+    {% else %}
+      <div class="phone">
+        <input class="validate[required]" value="{{ shipping_address.tel01 }}" placeholder="例）090" size="5" type="text" name="address_customer_shipping[tel01]" id="address_customer_shipping_tel01" data-prompt-position="topLeft">
+        <span>-</span>
+        <input class="validate[required]" value="{{ shipping_address.tel02 }}" placeholder="例）1234" size="5" type="text" name="address_customer_shipping[tel02]" id="address_customer_shipping_tel02" data-prompt-position="topLeft">
+        <span>-</span>
+        <input class="validate[required]" value="{{ shipping_address.tel03 }}" placeholder="例）5678" size="5" type="text" name="address_customer_shipping[tel03]" id="address_customer_shipping_tel03" data-prompt-position="topLeft">
+      </div>
+    {% endif %}
+  </fieldset>
+  <fieldset>
+    <label>FAX 番号</label>
+    {% if shop_form_settings['fax_1_field'] %}
+      <div class="full">
+        <input class="" placeholder="例）0362775504" type="text" value="{{ shipping_address.full_fax }}" name="address_customer_shipping[fax01]" id="address_customer_shipping_fax01" data-prompt-position="topLeft">
+      </div>
+    {% else %}
+      <div class="phone">
+        <input value="{{ shipping_address.fax01 }}" placeholder="例）03" size="5" type="text" name="address_customer_shipping[fax01]" id="address_customer_shipping_fax01" data-prompt-position="topLeft">
+        <span>-</span>
+        <input value="{{ shipping_address.fax02 }}" placeholder="例）0000" size="5" type="text" name="address_customer_shipping[fax02]" id="address_customer_shipping_fax02" data-prompt-position="topLeft">
+        <span>-</span>
+        <input value="{{ shipping_address.fax03 }}" placeholder="例）0000" size="5" type="text" name="address_customer_shipping[fax03]" id="address_customer_shipping_fax03" data-prompt-position="topLeft">
+      </div>
+    {% endif %}
+  </fieldset>
+  <center>
+    <input type="submit" name="commit" value="保存する" class="btn btn-black mb-2"><br />
+    <a href="/shop/customer/shipping_addresses" class="margin-bottom-5">戻る</a>
+  </center>
+</div>
